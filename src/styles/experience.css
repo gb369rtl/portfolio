@@ -304,6 +304,7 @@
     flex-wrap: wrap;
     gap: calc(4 * var(--u)) calc(24 * var(--u));
     padding-left: 0;
+    padding-right: 48px; /* clear of the commit-list button in the corner */
     margin-top: 0;
   }
   .exp-rail::before {
