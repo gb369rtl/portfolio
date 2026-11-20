@@ -163,6 +163,10 @@ function showStill() {
 // ---------------------------------------------------------------- the opening
 
 async function open() {
+  // Hidden before anything is measured: once the browser has worked out their style, hiding them would be a
+  // transition, and the words, the name and the hint would be seen fading out as the page starts.
+  parts.forEach((el) => el.classList.add('pre'));
+  hero.dataset.phase = 'loading';
   layoutHero();
   const inkColor = getComputedStyle(document.documentElement).getPropertyValue('--text').trim();
   const faceRenderer = createRenderer(byId('hero-face'), inkColor);
@@ -175,8 +179,6 @@ async function open() {
   const still = reduceMotion;
   let assembled = false;
   let stale = false; // the window changed while the words were still pixels
-  parts.forEach((el) => el.classList.add('pre'));
-  hero.dataset.phase = 'loading';
   const loader = createLoader(byId('hero-loader'), { instant: still });
   const counted = loader.run();
   loader.real = 0.15;
