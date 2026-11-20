@@ -81,7 +81,7 @@
 /* after the blast the sphere is knocked to the left and the list of every project opens on the right;
    running the pointer down the list turns the sphere to each book */
 .in .orbit.all:not(.picked):not(.reading) .dome-scene {
-  transform: translateX(-21vw) scale(var(--dome-s, 1));
+  transform: translateX(-20vw) scale(calc(var(--dome-s, 1) * 0.92)); /* a little smaller, so it clears the tree on a narrow screen */
   transition:
     opacity 0.4s ease,
     transform 0.8s var(--ease-rubber);

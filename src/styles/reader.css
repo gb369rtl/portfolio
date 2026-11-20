@@ -162,7 +162,10 @@
   display: block;
   width: 100%;
   height: auto;
-  min-width: calc(560 * var(--u));
+  min-width: min(
+    calc(560 * var(--u)),
+    560px
+  ); /* below this the labels are too small: the diagram scrolls sideways instead */
   font-family: var(--font-body);
 }
 .arch .an rect {
