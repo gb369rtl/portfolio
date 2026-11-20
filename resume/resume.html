@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Geetam, resume</title>
+<!-- Source of assets/Geetam-Resume.pdf on the portfolio. Print it to PDF with Chrome (see the command at the foot of this file).
+     Every line here is backed by the code or by the portfolio's own write-ups. No phone number and no GPA, because this copy is public. -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,100..900&display=swap">
+<style>
+  @page { size: A4; margin: 9mm 12.5mm 7.5mm; }
+  * { box-sizing: border-box; }
+  html { font-size: 8.8pt; }
+  body { margin: 0; font-family: "Archivo", Arial, Helvetica, sans-serif; line-height: 1.27; color: #111; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  a { color: inherit; text-decoration: none; }
+  h1 { margin: 0; font-size: 23pt; font-weight: 800; font-stretch: 75%; line-height: 1; letter-spacing: -0.01em; }
+  .title { margin: 3pt 0 0; font-size: 11.5pt; font-weight: 650; }
+  .contact { margin: 4pt 0 0; color: #333; }
+  .contact span + span::before { content: "|"; margin: 0 6pt; color: #999; }
+  h2 { margin: 6pt 0 3pt; padding-bottom: 2pt; border-bottom: 1.2pt solid #111; font-size: 10.6pt; font-weight: 800; font-stretch: 85%; }
+  p { margin: 0; }
+  .job { margin-top: 4.5pt; break-inside: avoid; }
+  .job:first-of-type { margin-top: 0; }
+  .row { display: flex; justify-content: space-between; align-items: baseline; gap: 10pt; }
+  .row b { font-size: 10.2pt; font-weight: 750; }
+  .row > span { flex: none; color: #333; font-variant-numeric: tabular-nums; }
+  .where { color: #444; font-style: italic; }
+  .row p .where { margin-left: 7pt; }
+  ul { margin: 2pt 0 0; padding-left: 11pt; }
+  li { margin: 0 0 0.9pt; padding-left: 1pt; }
+  .skills { display: grid; grid-template-columns: max-content 1fr; gap: 1.5pt 10pt; }
+  .skills dt { font-weight: 700; }
+  .skills dd { margin: 0; }
+  .proj p { margin-top: 2.6pt; }
+  .proj b { font-weight: 750; }
+</style>
+</head>
+<body>
+
+<h1>Geetam</h1>
+<p class="title">Agentic AI Full-Stack Engineer</p>
+<p class="contact"><span>Jaipur, India</span><span><a href="mailto:gb369rtl@gmail.com">gb369rtl@gmail.com</a></span><span><a href="https://linkedin.com/in/gb369rtl">linkedin.com/in/gb369rtl</a></span><span><a href="https://github.com/gb369rtl">github.com/gb369rtl</a></span></p>
+
+<h2>Summary</h2>
+<p>Full-stack engineer who builds AI agents for production use: the pipeline, the tools the agent calls, the review screens people use, and the evals and tracing behind them. Main author of an agent platform that routes procurement approvals through human review. Works across Python, TypeScript and React.</p>
+
+<h2>Experience</h2>
+
+<div class="job">
+  <div class="row"><p><b>SDE, Full Stack</b><span class="where">Wisflux Tech Labs, Jaipur</span></p><span>Sep 2025 &ndash; Present</span></div>
+  <ul>
+    <li>Built, as its main author, a production agent platform (NestJS 11, Nx, PostgreSQL, Redis Streams) that reads vendor email, matches each message to an approval record in a procurement system, and proposes the update for a coordinator to approve.</li>
+    <li>Designed the pipeline as eight fixed phases with a checkpoint per phase, carried on Redis Streams with a transactional outbox, retries and dead-letter streams. The model reads through 43 read-only MCP tools, and every write waits for human approval.</li>
+    <li>Built email ingestion for Gmail, Microsoft 365 (Graph) and IMAP with OAuth2, AES-256-GCM encryption at rest, object storage and an MCP server for mail.</li>
+    <li>Built the eval and release gates: nightly replay of real cases, a tool-parity check, prompts verified in CI, and Langfuse tracing with a cost ledger. Over 2,200 Jest test files.</li>
+    <li>Delivered an SAP Business One analytics platform: a custom Airbyte connector for HANA, 36 dbt models, 5 Superset dashboards, and a 12-week cash-flow forecast with a champion and candidate model registry.</li>
+    <li>Built a vision pipeline (FastAPI, YOLO, PaddleOCR, GPT-4o) that finds reviewer markups on engineering PDFs and checks whether the next revision addressed them, with the detector trained on a SLURM GPU cluster.</li>
+  </ul>
+</div>
+
+<div class="job">
+  <div class="row"><p><b>Full Stack Developer, Team Lead</b><span class="where">Data Science Technologies, Gurugram (contract)</span></p><span>May 2025 &ndash; Sep 2025</span></div>
+  <ul>
+    <li>Led the team building a self-hosted office suite (documents, drive, meetings, sheets and slides) behind Keycloak single sign-on, deployed with Docker Compose on PostgreSQL and Redis.</li>
+    <li>Built the spreadsheet's collaboration service (Express, Prisma, Redis, Socket.IO) with authenticated sockets for presence, cursors and permission-checked edits.</li>
+    <li>Built a visual workflow builder on ReactFlow with 32 node types (HTTP, code, LLM, machine learning), a slide editor with PowerPoint export, and a page builder that generates React code.</li>
+  </ul>
+</div>
+
+<div class="job">
+  <div class="row"><p><b>Full Stack Developer</b><span class="where">iClimb Systems, Gurugram (contract)</span></p><span>Apr 2025 &ndash; May 2025</span></div>
+  <ul>
+    <li>Built the backend and the React admin panel of a devotional app: daily prayer logs, scored checklists, levels and guides (Express, MongoDB).</li>
+    <li>Integrated Shipway shipping into an online bookshop: shipments created after verified Razorpay payment, carrier rates, pincode checks and order tracking. Built its checkout and order history.</li>
+  </ul>
+</div>
+
+<div class="job">
+  <div class="row"><p><b>Full Stack Developer</b><span class="where">8 Bit System, Jaipur</span></p><span>Jun 2024 &ndash; Mar 2025</span></div>
+  <ul>
+    <li>Built and maintained MERN-stack internal tools, including an HRMS and a gate-pass system.</li>
+    <li>Set up centralized logging and monitoring on the Elastic Stack, with Logstash pipelines and Elastic APM for Java microservices.</li>
+    <li>Built semantic search with BERT embeddings over datasets of 100M+ records, and automated AWS deploys with Docker and GitHub Actions.</li>
+  </ul>
+</div>
+
+<h2>Projects</h2>
+<div class="proj">
+  <p><b>Pay Bot</b> (freelance). A chat and voice agent that fills payment forms for human approval, on a 4B local model on a 6 GB GPU (llama.cpp). A rule engine decides and the model only proposes values. Cut the median turn from 16.9 s to about 2 s, with evals on the real API and mutation testing.</p>
+  <p><b>Agent Manager</b> (personal). A Rust desktop app (iced, tokio) that runs coding agents in parallel, each in its own git worktree, with live output and steering. 112 tests.</p>
+  <p><b>Session Memory</b> (personal). Hooks that file, tag and summarize coding-agent sessions into a searchable notes vault, built on the open-source mempalace tool.</p>
+</div>
+
+<h2>Skills</h2>
+<dl class="skills">
+  <dt>Agents and AI</dt><dd>LLM agent pipelines, MCP tool servers, human-in-the-loop review, evals, Langfuse tracing, LangGraph, llama.cpp, YOLO, PaddleOCR</dd>
+  <dt>Backend</dt><dd>FastAPI, NestJS, Express, WebSockets, server-sent events, OAuth2, JWT and RBAC</dd>
+  <dt>Frontend</dt><dd>React, Tailwind, TanStack Query, Vite, Zustand, Redux Toolkit, Next.js</dd>
+  <dt>Data</dt><dd>PostgreSQL, Redis Streams, MySQL, MongoDB, S3 and MinIO, Prisma, dbt, Airbyte, Superset</dd>
+  <dt>Cloud and DevOps</dt><dd>Docker, GitHub Actions, AWS, nginx, Drone CI, SLURM GPU clusters, Keycloak</dd>
+  <dt>Testing</dt><dd>pytest, Jest, Playwright, Vitest, mutation testing, Nx</dd>
+</dl>
+
+<h2>Education</h2>
+<div class="row"><b>B.Tech, Information Technology</b><span>2020 &ndash; 2024</span></div>
+<p><span class="where">Swami Keshvanand Institute of Technology, Jaipur.</span> Winner, Techfest IIT Bombay (pick-and-place gripper bot).</p>
+
+<!-- To rebuild the PDF:
+"C:\Program Files\Google\Chrome\Application\chrome.exe" --headless=new --no-pdf-header-footer --user-data-dir="%TEMP%\chrome-print" --print-to-pdf="D:\Companies\portfolio\build\assets\Geetam-Resume.pdf" "file:///D:/Companies/portfolio/build/resume/resume.html"
+-->
+</body>
+</html>
