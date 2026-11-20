@@ -1,0 +1,83 @@
+{
+  "note": "The loop in the middle is edit, test, retry. Only a passing run reaches the pull request, and only a person merges.",
+  "details": "architecture.md",
+  "nodes": [
+    {
+      "id": "issue",
+      "label": "GitHub issue",
+      "col": 0,
+      "row": 0
+    },
+    {
+      "id": "agent",
+      "label": "Coding agent",
+      "col": 1,
+      "row": 0
+    },
+    {
+      "id": "tools",
+      "label": "Repo and shell tools, MCP",
+      "col": 2,
+      "row": 0
+    },
+    {
+      "id": "box",
+      "label": "Docker sandbox",
+      "col": 2,
+      "row": 1,
+      "kind": "storage"
+    },
+    {
+      "id": "tests",
+      "label": "Test run",
+      "col": 3,
+      "row": 0
+    },
+    {
+      "id": "pr",
+      "label": "Pull request",
+      "col": 4,
+      "row": 0
+    },
+    {
+      "id": "rev",
+      "label": "Reviewer",
+      "col": 5,
+      "row": 0,
+      "kind": "person"
+    }
+  ],
+  "edges": [
+    {
+      "from": "issue",
+      "to": "agent"
+    },
+    {
+      "from": "agent",
+      "to": "tools",
+      "label": "edit, run"
+    },
+    {
+      "from": "tools",
+      "to": "box"
+    },
+    {
+      "from": "tools",
+      "to": "tests"
+    },
+    {
+      "from": "tests",
+      "to": "agent",
+      "label": "fail, retry"
+    },
+    {
+      "from": "tests",
+      "to": "pr",
+      "label": "pass"
+    },
+    {
+      "from": "pr",
+      "to": "rev"
+    }
+  ]
+}

@@ -1,0 +1,61 @@
+{
+  "name": "Geetam",
+  "brand": "geetam.",
+  "role": "Agentic AI full-stack engineer",
+  "location": "Jaipur, India",
+  "timezone": "UTC+5:30",
+  "email": "gb369rtl@gmail.com",
+  "links": [
+    { "id": "github", "label": "GitHub", "url": "https://github.com/gb369rtl" },
+    { "id": "linkedin", "label": "LinkedIn", "url": "https://linkedin.com/in/gb369rtl" }
+  ],
+  "resume": {
+    "label": "Resume",
+    "file": "assets/Geetam-Resume.pdf"
+  },
+  "education": {
+    "degree": "B.Tech, Information Technology",
+    "school": "Swami Keshvanand Institute of Technology",
+    "years": "2020-2024"
+  },
+  "hero": {
+    "availability": "Open to agentic AI and full-stack roles",
+    "greeting": "Hi, I'm Geetam",
+    "headline": {
+      "marked": "Agentic AI full-stack engineer",
+      "rest": "building agents that hold up in production."
+    },
+    "bio": "I build the agent, the tools it calls, the review screen for people, and the queues, evals and tracing behind it.",
+    "actions": {
+      "work": "View my work",
+      "contact": "Get in touch"
+    },
+    "portraitWords": [
+      "AGENTS",
+      "MCP",
+      "LANGGRAPH",
+      "EVALS",
+      "HUMAN",
+      "REVIEW",
+      "PYTHON",
+      "TYPESCRIPT",
+      "FASTAPI",
+      "NESTJS",
+      "REACT",
+      "NEXTJS",
+      "POSTGRES",
+      "REDIS",
+      "DOCKER",
+      "AWS",
+      "PYTEST",
+      "PLAYWRIGHT"
+    ],
+    "collaborators": ["Designer", "Dev", "Git"]
+  },
+  "contact": {
+    "heading": "Let's talk",
+    "blurb": "Open to agentic AI and full-stack roles. Based in Jaipur, India (UTC+5:30).",
+    "release": "v1.0",
+    "focus": "Automating approval, payment and document workflows with agents"
+  }
+}

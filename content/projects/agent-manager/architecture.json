@@ -1,0 +1,86 @@
+{
+  "note": "The supervisor owns the processes. Each agent has its own checkout, and everything the interface shows comes from the parsed output stream.",
+  "nodes": [
+    {
+      "id": "dev",
+      "label": "Developer",
+      "col": 0,
+      "row": 0,
+      "kind": "person"
+    },
+    {
+      "id": "ui",
+      "label": "Desktop app, iced",
+      "col": 1,
+      "row": 0
+    },
+    {
+      "id": "sup",
+      "label": "Supervisor, tokio",
+      "col": 2,
+      "row": 0
+    },
+    {
+      "id": "a1",
+      "label": "Agent process A",
+      "col": 3,
+      "row": 0
+    },
+    {
+      "id": "a2",
+      "label": "Agent process B",
+      "col": 3,
+      "row": 1
+    },
+    {
+      "id": "wt",
+      "label": "One worktree each",
+      "col": 4,
+      "row": 0,
+      "kind": "storage"
+    },
+    {
+      "id": "parse",
+      "label": "Stream parser",
+      "col": 2,
+      "row": 1
+    }
+  ],
+  "edges": [
+    {
+      "from": "dev",
+      "to": "ui"
+    },
+    {
+      "from": "ui",
+      "to": "sup",
+      "label": "start, steer, stop"
+    },
+    {
+      "from": "sup",
+      "to": "a1"
+    },
+    {
+      "from": "sup",
+      "to": "a2"
+    },
+    {
+      "from": "a1",
+      "to": "wt"
+    },
+    {
+      "from": "a2",
+      "to": "wt"
+    },
+    {
+      "from": "a1",
+      "to": "parse",
+      "label": "output lines"
+    },
+    {
+      "from": "parse",
+      "to": "ui",
+      "label": "typed events"
+    }
+  ]
+}

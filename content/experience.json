@@ -1,0 +1,160 @@
+[
+  {
+    "id": "8bit",
+    "company": "8 Bit System",
+    "role": "Full Stack Developer",
+    "start": "2024-06",
+    "end": "2025-03",
+    "work": [
+      {
+        "type": "feat",
+        "scope": "mern",
+        "text": "build and maintain internal MERN-stack tools, including an HRMS and a gate-pass system"
+      },
+      {
+        "type": "feat",
+        "scope": "elastic",
+        "text": "set up centralized logging and monitoring on the Elastic Stack (Elasticsearch, Logstash, Kibana, Filebeat)"
+      },
+      {
+        "type": "feat",
+        "scope": "apm",
+        "text": "add Elastic APM with Fleet-managed agents to trace Java microservices"
+      },
+      {
+        "type": "feat",
+        "scope": "logstash",
+        "text": "write Logstash pipelines with Grok patterns for CSV, JSON and free-form logs"
+      },
+      {
+        "type": "feat",
+        "scope": "search",
+        "text": "build semantic search with BERT embeddings over datasets of 100M+ records"
+      },
+      {
+        "type": "ci",
+        "scope": "deploy",
+        "text": "automate builds and AWS deploys with Dockerfiles and GitHub Actions"
+      }
+    ]
+  },
+  {
+    "id": "iclimb",
+    "company": "iClimb Systems",
+    "role": "Full Stack Developer",
+    "start": "2025-04",
+    "end": "2025-05",
+    "note": "contract",
+    "work": [
+      {
+        "type": "feat",
+        "scope": "api",
+        "text": "build the backend of a devotional app: daily prayer logs, scored checklists, levels and guides, with phone and Google sign-in"
+      },
+      {
+        "type": "feat",
+        "scope": "admin",
+        "text": "build its React admin panel for content, checklists, levels, languages and time zones"
+      },
+      {
+        "type": "feat",
+        "scope": "shipping",
+        "text": "integrate Shipway into an online bookshop: shipments created after verified payment, carrier rates, pincode checks and order tracking"
+      },
+      {
+        "type": "feat",
+        "scope": "store",
+        "text": "build checkout, order history and a banner manager across the storefront and its dashboard"
+      },
+      {
+        "type": "chore",
+        "scope": "infra",
+        "text": "deploy on AWS behind Nginx, with Cloudinary for media and Cloudflare rate limiting"
+      }
+    ]
+  },
+  {
+    "id": "dst",
+    "company": "Data Science Technologies",
+    "role": "Full Stack Developer, Team Lead",
+    "start": "2025-05",
+    "end": "2025-09",
+    "note": "contract",
+    "work": [
+      {
+        "type": "feat",
+        "scope": "suite",
+        "text": "lead the team building a self-hosted office suite: documents, drive, meetings, sheets and slides behind one sign-in"
+      },
+      {
+        "type": "feat",
+        "scope": "sheets",
+        "text": "build the collaboration service for the spreadsheet: Keycloak sign-in, and sockets for presence, cursors and permission-checked edits"
+      },
+      {
+        "type": "feat",
+        "scope": "workflow",
+        "text": "build a visual workflow builder on ReactFlow with 32 node types, including HTTP, code, LLM and machine-learning nodes"
+      },
+      {
+        "type": "feat",
+        "scope": "slides",
+        "text": "build a slide editor with 50-step undo, a slideshow mode and PowerPoint export"
+      },
+      {
+        "type": "feat",
+        "scope": "builder",
+        "text": "build a drag-and-drop page builder with 32 components that generates React code"
+      },
+      {
+        "type": "chore",
+        "scope": "deploy",
+        "text": "deploy the suite with Docker Compose: PostgreSQL, Redis and Keycloak over HTTPS, behind a reverse proxy"
+      }
+    ]
+  },
+  {
+    "id": "wisflux",
+    "company": "Wisflux Tech Labs",
+    "role": "SDE, Full Stack",
+    "start": "2025-09",
+    "end": null,
+    "work": [
+      {
+        "type": "feat",
+        "scope": "agents",
+        "text": "build an eight-phase agent pipeline that reads vendor email, finds the approval record and proposes the update"
+      },
+      {
+        "type": "feat",
+        "scope": "tools",
+        "text": "give the agent 43 read-only MCP tools, scoped per phase; every write waits for a person"
+      },
+      {
+        "type": "feat",
+        "scope": "queue",
+        "text": "carry work on Redis Streams with a transactional outbox, retries, dead letters and per-phase checkpoints"
+      },
+      {
+        "type": "feat",
+        "scope": "email",
+        "text": "build Gmail, Microsoft 365 and IMAP ingestion with OAuth2 and AES-256-GCM storage"
+      },
+      {
+        "type": "test",
+        "scope": "evals",
+        "text": "replay real cases nightly, gate prompts and tools in CI, trace every run with Langfuse"
+      },
+      {
+        "type": "feat",
+        "scope": "analytics",
+        "text": "ship SAP Business One analytics: custom Airbyte connector, 36 dbt models, 5 Superset dashboards, cash-flow forecast"
+      },
+      {
+        "type": "feat",
+        "scope": "vision",
+        "text": "find reviewer markups on PDF drawings with YOLO and OCR, then check the next revision with GPT-4o"
+      }
+    ]
+  }
+]

@@ -1,0 +1,98 @@
+{
+  "note": "The API is tried first. The browser is the fallback, and nothing counts as done until the check has seen evidence.",
+  "details": "architecture.md",
+  "nodes": [
+    {
+      "id": "task",
+      "label": "Task",
+      "col": 0,
+      "row": 0,
+      "kind": "person"
+    },
+    {
+      "id": "route",
+      "label": "Router",
+      "col": 1,
+      "row": 0
+    },
+    {
+      "id": "api",
+      "label": "API call",
+      "col": 2,
+      "row": 0
+    },
+    {
+      "id": "agent",
+      "label": "Browser agent",
+      "col": 2,
+      "row": 1
+    },
+    {
+      "id": "page",
+      "label": "Page reader",
+      "col": 3,
+      "row": 1
+    },
+    {
+      "id": "pw",
+      "label": "Headless browser",
+      "col": 4,
+      "row": 1
+    },
+    {
+      "id": "check",
+      "label": "Completion check",
+      "col": 3,
+      "row": 0
+    },
+    {
+      "id": "done",
+      "label": "Result and step log",
+      "col": 4,
+      "row": 0
+    }
+  ],
+  "edges": [
+    {
+      "from": "task",
+      "to": "route"
+    },
+    {
+      "from": "route",
+      "to": "api",
+      "label": "API exists"
+    },
+    {
+      "from": "api",
+      "to": "agent",
+      "label": "error"
+    },
+    {
+      "from": "route",
+      "to": "agent",
+      "label": "no API"
+    },
+    {
+      "from": "agent",
+      "to": "page",
+      "label": "read"
+    },
+    {
+      "from": "page",
+      "to": "pw",
+      "label": "act"
+    },
+    {
+      "from": "api",
+      "to": "check"
+    },
+    {
+      "from": "agent",
+      "to": "check"
+    },
+    {
+      "from": "check",
+      "to": "done"
+    }
+  ]
+}

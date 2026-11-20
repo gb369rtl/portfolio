@@ -1,0 +1,93 @@
+{
+  "note": "The top row finds the comments. The lower branch finds where each page went in the revision. The two meet at the check, and a reviewer has the last word.",
+  "nodes": [
+    {
+      "id": "pdf",
+      "label": "3 PDFs",
+      "col": 0,
+      "row": 0
+    },
+    {
+      "id": "api",
+      "label": "API and storage",
+      "col": 1,
+      "row": 0
+    },
+    {
+      "id": "ink",
+      "label": "Align, isolate the ink",
+      "col": 2,
+      "row": 0
+    },
+    {
+      "id": "det",
+      "label": "YOLO + OCR",
+      "col": 3,
+      "row": 0
+    },
+    {
+      "id": "match",
+      "label": "Page matching",
+      "col": 2,
+      "row": 1
+    },
+    {
+      "id": "vlm",
+      "label": "GPT-4o check",
+      "col": 4,
+      "row": 0
+    },
+    {
+      "id": "app",
+      "label": "Review app",
+      "col": 5,
+      "row": 0
+    },
+    {
+      "id": "rev",
+      "label": "Reviewer",
+      "col": 5,
+      "row": 1,
+      "kind": "person"
+    }
+  ],
+  "edges": [
+    {
+      "from": "pdf",
+      "to": "api"
+    },
+    {
+      "from": "api",
+      "to": "ink"
+    },
+    {
+      "from": "ink",
+      "to": "det",
+      "label": "markups"
+    },
+    {
+      "from": "api",
+      "to": "match",
+      "label": "original, revision"
+    },
+    {
+      "from": "det",
+      "to": "vlm",
+      "label": "comments"
+    },
+    {
+      "from": "match",
+      "to": "vlm",
+      "label": "matching pages"
+    },
+    {
+      "from": "vlm",
+      "to": "app",
+      "label": "verdicts"
+    },
+    {
+      "from": "app",
+      "to": "rev"
+    }
+  ]
+}

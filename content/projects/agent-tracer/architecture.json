@@ -1,0 +1,94 @@
+{
+  "note": "Every call passes through the wrapper. Spans go out to the backend; the running cost goes to the guard, which can stop the run or move it to a cheaper model.",
+  "details": "architecture.md",
+  "nodes": [
+    {
+      "id": "run",
+      "label": "Agent run",
+      "col": 0,
+      "row": 0
+    },
+    {
+      "id": "wrap",
+      "label": "Tracing wrapper",
+      "col": 1,
+      "row": 0
+    },
+    {
+      "id": "guard",
+      "label": "Budget guard",
+      "col": 0,
+      "row": 1
+    },
+    {
+      "id": "model",
+      "label": "Model and tools",
+      "col": 2,
+      "row": 0
+    },
+    {
+      "id": "otel",
+      "label": "OpenTelemetry export",
+      "col": 3,
+      "row": 0
+    },
+    {
+      "id": "store",
+      "label": "Trace backend",
+      "col": 4,
+      "row": 0,
+      "kind": "storage"
+    },
+    {
+      "id": "replay",
+      "label": "Replay and timeline",
+      "col": 5,
+      "row": 0
+    },
+    {
+      "id": "eng",
+      "label": "Engineer",
+      "col": 5,
+      "row": 1,
+      "kind": "person"
+    }
+  ],
+  "edges": [
+    {
+      "from": "run",
+      "to": "wrap"
+    },
+    {
+      "from": "wrap",
+      "to": "model",
+      "label": "calls"
+    },
+    {
+      "from": "wrap",
+      "to": "guard",
+      "label": "cost so far"
+    },
+    {
+      "from": "guard",
+      "to": "run",
+      "label": "stop or downgrade"
+    },
+    {
+      "from": "wrap",
+      "to": "otel",
+      "label": "spans"
+    },
+    {
+      "from": "otel",
+      "to": "store"
+    },
+    {
+      "from": "store",
+      "to": "replay"
+    },
+    {
+      "from": "replay",
+      "to": "eng"
+    }
+  ]
+}
