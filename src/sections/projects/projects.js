@@ -7,7 +7,7 @@
 import { loadWriteup, profile, projects } from '../../core/content.js';
 import { app, byId } from '../../core/dom.js';
 import { PRESS, reduceMotion } from '../../core/env.js';
-import { isPhone, isStacked, unitOf } from '../../core/scale.js';
+import { isStacked, unitOf } from '../../core/scale.js';
 import { isOn, state } from '../../core/state.js';
 import { HEAD_ROW, setHeadCommit, setHeadSection } from '../../graph/graph.js';
 import { laneColor } from '../../graph/model.js';
@@ -16,14 +16,62 @@ import { throwGrenade } from './blast.js';
 import { createReader } from './reader.js';
 
 const RADIUS = 215; // of the sphere, in its own units; --dome-s scales the whole thing
-const RINGS = [
-  // latitude in degrees, books in that ring
-  [-62, 7],
-  [-31, 13],
-  [0, 15],
-  [31, 13],
-  [62, 7],
-];
+const BOOK_W = 78; // a book on the sphere, in the same units (the size of .dome-tile in projects.css)
+const BOOK_H = 108;
+const LIFT = 34; // how far the chosen book comes forward
+// How far the sphere reaches from its centre on screen at scale 1: the far corner of a book, seen through the
+// scene's perspective (620px, in projects.css).
+const REACH = 242;
+const ROW_GAP = 3; // the room between a ring of books and the ring above it
+const SIDE_GAP = 3; // the room between two books side by side, measured where they come closest
+// On the equator two books are that close along their whole height, where in every other ring they only come
+// that close at one corner and fan apart from there. The same gap reads tighter here, so it gets a little more.
+const EQUATOR_GAP = 5;
+// About how large the books are in each ring, from the equator to a pole. The ring nearest a pole holds
+// smaller books: a flat book fans away from its neighbours as it nears a pole, and a smaller one fans less,
+// so the cap stays closed instead of opening into wide wedges.
+const RING_SIZES = [1, 1, 0.7];
+
+// One ring, resting ROW_GAP above `below` (the height the ring under it reaches; null for the equator).
+// A whole number of books has to go round, so the size asked for is adjusted a little, up or down, until the
+// books stand exactly `gap` apart. A book is a flat tile touching the sphere at its centre, so away from
+// the equator its edge nearer the pole sits on a smaller circle than its centre does; that edge is where
+// neighbours come closest, and it is the one measured.
+function fitRing(wanted, below, gap) {
+  let size = wanted;
+  let books = 0;
+  let angle = 0;
+  for (let pass = 0; pass < 6; pass++) {
+    const half = (BOOK_H * size) / 2;
+    // the latitude that puts the lower edge, at height RADIUS sin(a) - half cos(a), ROW_GAP above the ring below
+    angle = below === null ? 0 : Math.asin((below + ROW_GAP) / Math.hypot(RADIUS, half)) + Math.atan(half / RADIUS);
+    const around = 2 * Math.PI * (RADIUS * Math.cos(angle) - half * Math.sin(angle));
+    if (pass === 0) books = Math.max(3, Math.round(around / (BOOK_W * wanted + gap)));
+    size = (around / books - gap) / BOOK_W; // a different size moves the ring a little: go round again
+  }
+  const half = (BOOK_H * size) / 2;
+  return {
+    latitude: +((angle * 180) / Math.PI).toFixed(2),
+    size: +size.toFixed(4),
+    books,
+    top: RADIUS * Math.sin(angle) + half * Math.cos(angle),
+  };
+}
+
+// The rings of books from pole to pole, packed as closely as they go without one book covering another.
+const RINGS = (() => {
+  const equator = fitRing(RING_SIZES[0], null, EQUATOR_GAP);
+  const upper = [];
+  let below = equator.top;
+  for (const wanted of RING_SIZES.slice(1)) {
+    const ring = fitRing(wanted, below, SIDE_GAP);
+    upper.push(ring);
+    below = ring.top;
+  }
+  const lower = upper.map((ring) => ({ ...ring, latitude: -ring.latitude })).reverse();
+  return [...lower, equator, ...upper];
+})();
+
 const AUTO_SPIN = reduceMotion ? 0 : 0.007; // degrees per ms
 const MAX_TILT = 38; // while nothing is picked
 const MAX_TILT_PICKED = 64;
@@ -52,20 +100,69 @@ const coverHtml = (project) =>
 
 // ----- every slot on the sphere is a book; the projects repeat around it, stepped so neighbours differ -----
 const tiles = [];
-RINGS.forEach(([latitude, books], ring) => {
+
+// Which project a book shows. There are several books for every project, and two neighbours must never be the
+// same one: each book takes the project used least so far that none of its neighbours has.
+const timesUsed = new Array(total).fill(0);
+let turn = 0;
+function projectFor(neighbours) {
+  let choice = -1;
+  for (let step = 0; step < total; step++) {
+    const candidate = (turn + step) % total;
+    if (neighbours.has(candidate)) continue;
+    if (choice < 0 || timesUsed[candidate] < timesUsed[choice]) choice = candidate;
+  }
+  if (choice < 0) choice = turn % total; // fewer projects than a book has neighbours: nothing left to avoid
+  timesUsed[choice]++;
+  turn = choice + 1;
+  return choice;
+}
+const degreesApart = (a, b) => Math.abs(((a - b + 540) % 360) - 180);
+
+let ringBelow = [];
+RINGS.forEach((ring, row) => {
+  const { latitude, size, books } = ring;
+  const step = 360 / books;
+  const inRing = [];
   for (let slot = 0; slot < books; slot++) {
-    const project = (slot + ring * 2) % total;
-    const longitude = slot * (360 / books) + (ring % 2 ? 180 / books : 0);
+    const longitude = slot * step + (row % 2 ? step / 2 : 0);
+    // its neighbours: the books it sits above, and those one along from them, which it meets at a corner...
+    const neighbours = new Set(
+      ringBelow
+        .filter((tile) => degreesApart(tile.longitude, longitude) < (tile.step + step) * 0.9)
+        .map((tile) => tile.project),
+    );
+    // ...and the two before it and, as the ring comes round, the two after it, so a ring never reads A, B, A
+    for (const near of [slot - 1, slot - 2, slot + 1 - books, slot + 2 - books]) {
+      if (near >= 0 && near < slot) neighbours.add(inRing[near].project);
+    }
+    const project = projectFor(neighbours);
+
     const el = document.createElement('div');
     el.className = 'dome-tile';
     el.dataset.project = project;
     el.style.setProperty('--c', laneColor(project));
-    el.innerHTML = `<div class="cover v${(slot + ring) % 3}">${coverHtml(projects[project])}</div>`;
-    const home = `rotateY(${longitude}deg) rotateX(${-latitude}deg) translateZ(${RADIUS}px)`;
+    el.innerHTML = `<div class="cover v${(slot + row) % 3}">${coverHtml(projects[project])}</div>`;
+    const place = `rotateY(${longitude}deg) rotateX(${-latitude}deg)`;
+    const home = `${place} translateZ(${RADIUS}px) scale(${size})`;
+    const lifted = `${place} translateZ(${RADIUS + LIFT}px) scale(1.3)`; // the chosen book is full size, whichever ring it came from
     el.style.transform = home;
     stage.appendChild(el);
-    tiles.push({ el, project, home, longitude, latitude, latitudeRad: (latitude * Math.PI) / 180, back: null });
+    const tile = {
+      el,
+      project,
+      home,
+      lifted,
+      longitude,
+      latitude,
+      step,
+      latitudeRad: (latitude * Math.PI) / 180,
+      back: null,
+    };
+    inRing.push(tile);
+    tiles.push(tile);
   }
+  ringBelow = inRing;
 });
 
 projects.forEach((project, i) => {
@@ -143,7 +240,7 @@ function selectTile(tile) {
   selectedTile = tile;
   if (tile) {
     tile.el.classList.add('sel');
-    tile.el.style.transform = `${tile.home} translateZ(34px) scale(1.3)`;
+    tile.el.style.transform = tile.lifted;
   }
 }
 
@@ -489,16 +586,72 @@ window.addEventListener('pointercancel', () => {
 
 // ----- what the rest of the page may ask -----
 
-/** Size the sphere to the window: it shares the screen with the corner text, or has it to itself when stacked. */
+const cornerEls = ['.orbit-tl h2', '.orbit-tr', '#orbit-all', '.orbit-bl', '.orbit-br'].map((selector) =>
+  orbit.querySelector(selector),
+);
+const pill = orbit.querySelector('.orbit-pill');
+const isShown = (el) => el.getClientRects().length > 0;
+
+// the largest circle around (cx, cy) that keeps `margin` clear of every box
+function clearRadius(cx, cy, boxes, margin) {
+  let radius = Infinity;
+  for (const box of boxes) {
+    const nearX = clamp(cx, box.left, box.right);
+    const nearY = clamp(cy, box.top, box.bottom);
+    radius = Math.min(radius, Math.hypot(nearX - cx, nearY - cy) - margin);
+  }
+  return radius;
+}
+
+/**
+ * Size the sphere to the room it has, whatever the window: as large as fits among the heading, the counter,
+ * the list of names and the bar at the foot. Also works out where it goes when the project list is open.
+ */
 export function layoutProjects() {
-  const w = window.innerWidth;
-  const h = window.innerHeight;
-  const scale = isPhone()
-    ? Math.min(w / 560, h / 720) // a phone: nearly the full width
-    : isStacked()
-      ? Math.min(w / 620, h / 800)
-      : Math.min(w / 1250, h / 620);
-  orbit.style.setProperty('--dome-s', clamp(scale, 0.4, 3).toFixed(3));
+  const u = unitOf(orbit);
+  const frame = orbit.getBoundingClientRect();
+  const margin = 10 * u;
+  const boxes = cornerEls.filter(isShown).map((el) => el.getBoundingClientRect());
+  const isWide = (box) => box.width > frame.width * 0.6;
+
+  // The sphere stands on a floor: the bar at the foot, or the line of help above it where that runs the full
+  // width (a phone). Everything else is a corner it has to stay clear of.
+  const floor = Math.min(pill.getBoundingClientRect().top, ...boxes.filter(isWide).map((box) => box.top)) - margin;
+  const corners = boxes.filter((box) => !isWide(box));
+  const upper = corners.filter((box) => box.bottom < frame.top + frame.height * 0.45);
+  const lower = corners.filter((box) => !upper.includes(box));
+  const cx = frame.left + frame.width / 2;
+
+  // Two ways to place it, and the one that gives the larger sphere wins. On a wide screen it rises between the
+  // corner texts. Where they leave no room between them (a phone, an upright tablet) it sits under them.
+  const place = (top, around) => {
+    const cy = (top + floor) / 2;
+    const reach = Math.min((floor - top) / 2 - 14 * u, frame.width / 2 - 4 * u, clearRadius(cx, cy, around, margin));
+    return { top, cy, reach };
+  };
+  const between = place(frame.top, corners);
+  const under = upper.length ? place(Math.max(...upper.map((box) => box.bottom)) + margin, lower) : between;
+  const best = under.reach > between.reach ? under : between;
+
+  scene.style.top = `${(best.top - frame.top).toFixed(1)}px`;
+  scene.style.bottom = `${Math.max(0, frame.bottom - floor).toFixed(1)}px`;
+  orbit.style.setProperty('--dome-s', clamp(best.reach / REACH, 0.4, 3).toFixed(3));
+
+  // With the list of every project open, the corners are gone and the sphere takes the room the list leaves:
+  // above it where the layout is stacked, to its left otherwise.
+  const list = { left: frame.left + allView.offsetLeft, top: frame.top + allView.offsetTop };
+  const room = isStacked()
+    ? { left: frame.left, right: frame.right, top: frame.top, bottom: list.top - margin }
+    : {
+        left: frame.left + (parseFloat(getComputedStyle(orbit.querySelector('.orbit-bl')).left) || 0),
+        right: list.left - 70 * u, // the list's collapse handle sits to its left
+        top: frame.top,
+        bottom: frame.bottom,
+      };
+  const allReach = Math.min((room.right - room.left) / 2, (room.bottom - room.top) / 2) - margin;
+  orbit.style.setProperty('--all-x', `${((room.left + room.right) / 2 - cx).toFixed(1)}px`);
+  orbit.style.setProperty('--all-y', `${((room.top + room.bottom) / 2 - best.cy).toFixed(1)}px`);
+  orbit.style.setProperty('--all-s', clamp(allReach / REACH, 0.3, 3).toFixed(3));
 }
 
 /** A push as the section arrives. */

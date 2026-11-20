@@ -30,4 +30,8 @@ window.addEventListener('resize', () => {
 });
 
 fitSections();
-document.fonts.ready.then(fitSections); // text is a different size once the real fonts are in
+// text is a different size once the real fonts are in, and the sphere is sized around the text beside it
+document.fonts.ready.then(() => {
+  fitSections();
+  layoutProjects();
+});

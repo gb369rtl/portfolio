@@ -81,7 +81,7 @@
 /* after the blast the sphere is knocked to the left and the list of every project opens on the right;
    running the pointer down the list turns the sphere to each book */
 .in .orbit.all:not(.picked):not(.reading) .dome-scene {
-  transform: translateX(-20vw) scale(calc(var(--dome-s, 1) * 0.92)); /* a little smaller, so it clears the tree on a narrow screen */
+  transform: translate(var(--all-x, 0px), var(--all-y, 0px)) scale(var(--all-s, 1)); /* set in layoutProjects */
   transition:
     opacity 0.4s ease,
     transform 0.8s var(--ease-rubber);
@@ -229,9 +229,6 @@
 }
 
 @media (max-width: 900px), (orientation: portrait) {
-  .in .orbit.all:not(.picked):not(.reading) .dome-scene {
-    transform: translateY(-27vh) scale(calc(var(--dome-s, 1) * 0.62));
-  }
   #all-view {
     left: calc(8 * var(--u));
     right: calc(8 * var(--u));
@@ -262,9 +259,6 @@
 
 @media (max-width: 599px) and (orientation: portrait) {
   /* the sphere moves up and shrinks; the list is a two-column grid under it, every name a full-size tap target */
-  .in .orbit.all:not(.picked):not(.reading) .dome-scene {
-    transform: translateY(-26vh) scale(calc(var(--dome-s, 1) * 0.5));
-  }
   #all-view {
     left: 0;
     right: 0;
