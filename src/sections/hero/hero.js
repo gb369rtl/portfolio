@@ -7,7 +7,7 @@
 
 import { profile } from '../../core/content.js';
 import { byId, sectionEl } from '../../core/dom.js';
-import { modestDevice, reduceMotion } from '../../core/env.js';
+import { modestDevice, reduceMotion, touchInput } from '../../core/env.js';
 import { goTo } from '../../core/router.js';
 import { isStacked, unitOf } from '../../core/scale.js';
 import { SECTIONS, state } from '../../core/state.js';
@@ -67,6 +67,11 @@ const LABELS = ['photo.jpg', 'div / Intro', 'h1 / Headline', 'p / Bio', 'div / A
 
 byId('hero-work').addEventListener('click', () => goTo(SECTIONS.indexOf('projects')));
 byId('hero-talk').addEventListener('click', () => goTo(SECTIONS.indexOf('contact')));
+
+// the one instruction the page needs; it is also a button, for anyone who would rather press than swipe
+const hint = byId('scroll-hint');
+hint.querySelector('span').textContent = `${touchInput ? 'swipe' : 'scroll'} up to begin`;
+hint.addEventListener('click', () => goTo(1));
 
 const origin = () => hero.getBoundingClientRect();
 const boxOf = (el) => {

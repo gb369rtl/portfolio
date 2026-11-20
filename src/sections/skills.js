@@ -2,6 +2,7 @@
 
 import { skills } from '../core/content.js';
 import { byId } from '../core/dom.js';
+import { touchInput } from '../core/env.js';
 import { esc } from '../lib/util.js';
 
 const SECONDS_PER_ITEM = 3.6;
@@ -25,4 +26,10 @@ for (const group of skills) {
     `<div class="sk-run" style="--dur:${(group.items.length * SECONDS_PER_ITEM).toFixed(1)}s">` +
     `${tape(false)}${tape(true).repeat(COPIES - 1)}</div></div>`;
   list.appendChild(row);
+}
+
+// A pointer holds a tape still by resting on it (that is in the stylesheet). A finger cannot rest without
+// pressing, so on a touch screen a tap holds the tape and another tap lets it go.
+if (touchInput) {
+  list.addEventListener('click', (event) => event.target.closest('.sk-row')?.classList.toggle('held'));
 }

@@ -2,10 +2,13 @@
 // visitor reaches any commit, and on every screen it is how the keyboard does.
 
 import { byId, graphWrap, overlay, skipHint } from '../core/dom.js';
+import { touchInput } from '../core/env.js';
 import { jump } from '../core/router.js';
 import { state } from '../core/state.js';
 import { hoverCommit } from '../graph/graph.js';
 import { isReading } from '../sections/projects/projects.js';
+
+const SKIP_HINT = touchInput ? 'tap to skip' : 'esc to skip'; // what the hint under a section change says
 
 const button = byId('log-open');
 const rowsEl = byId('gg-rows');
@@ -36,7 +39,7 @@ export function closeMenu(going) {
   graphWrap.classList.remove('menu');
   graphWrap.setAttribute('aria-hidden', 'true');
   button.setAttribute('aria-expanded', 'false');
-  skipHint.textContent = 'esc to skip';
+  skipHint.textContent = SKIP_HINT;
   rowsEl.querySelectorAll('.gg-row').forEach((row) => {
     row.removeAttribute('tabindex');
     row.removeAttribute('role');
@@ -76,3 +79,5 @@ rowsEl.addEventListener('click', (event) => {
   if (state.menuOpen && row) pickRow(row);
 });
 overlay.addEventListener('click', () => closeMenu());
+
+skipHint.textContent = SKIP_HINT;

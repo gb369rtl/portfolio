@@ -6,8 +6,8 @@
 
 import { loadWriteup, profile, projects } from '../../core/content.js';
 import { app, byId } from '../../core/dom.js';
-import { reduceMotion } from '../../core/env.js';
-import { isStacked, unitOf } from '../../core/scale.js';
+import { PRESS, reduceMotion } from '../../core/env.js';
+import { isPhone, isStacked, unitOf } from '../../core/scale.js';
 import { isOn, state } from '../../core/state.js';
 import { HEAD_ROW, setHeadCommit, setHeadSection } from '../../graph/graph.js';
 import { laneColor } from '../../graph/model.js';
@@ -28,6 +28,7 @@ const AUTO_SPIN = reduceMotion ? 0 : 0.007; // degrees per ms
 const MAX_TILT = 38; // while nothing is picked
 const MAX_TILT_PICKED = 64;
 const CLICK_SLOP = 6; // px the pointer may move and still count as a click
+const AXIS_SLOP = 8; // px a finger travels before it is clear whether it is spinning the sphere or swiping the page
 
 const orbit = byId('orbit');
 const scene = byId('dome-scene');
@@ -109,7 +110,7 @@ function updateUi() {
     mode === 'none'
       ? 'Pick a book'
       : mode === 'picked'
-        ? `${project.name}: click it to read`
+        ? `${project.name}: ${PRESS} it to read`
         : `Reading ${project.name}`;
   pullButton.setAttribute(
     'aria-label',
@@ -301,11 +302,13 @@ allView.innerHTML =
   projects
     .map(
       (project, i) =>
-        `<button type="button" class="all-row" data-project="${i}" style="--c:${laneColor(i)}"><span class="num">${pad2(i + 1)}</span><i></i>` +
+        `<button type="button" class="all-row" data-project="${i}" data-status="${esc(project.status)}" style="--c:${laneColor(i)}"><span class="num">${pad2(i + 1)}</span><i></i>` +
         `<span>${esc(project.name)}</span><span class="st">${esc(project.status)}</span></button>`,
     )
     .join('') +
-  '<p class="all-note">Point at a name and the sphere turns to that book. Click it to read.</p>';
+  '<p class="all-key" aria-hidden="true"><i></i>shipped <i class="design"></i>design</p>' +
+  '<p class="all-note"><span class="when-mouse">Point at a name and the sphere turns to that book. Click it to read.</span>' +
+  '<span class="when-touch">Tap a name to open its book.</span></p>';
 const allRows = [...allView.querySelectorAll('.all-row')];
 const markRow = (row) => allRows.forEach((other) => other.classList.toggle('on', other === row));
 
@@ -382,6 +385,11 @@ let lastX = 0;
 let lastY = 0;
 let travelled = 0;
 let pressed = null;
+let startX = 0;
+let startY = 0;
+// A mouse drag always turns the sphere. A finger either spins it (sideways, 'x') or is swiping the page ('y');
+// which one is not known until it has moved a little.
+let axis = 'x';
 let lastFrame = null;
 
 function frame(now) {
@@ -410,11 +418,14 @@ function frame(now) {
   render();
 }
 
-function dragStart(x, y, target) {
+function dragStart(x, y, target, byFinger = false) {
   aim = null;
   dragging = true;
   lastX = x;
   lastY = y;
+  startX = x;
+  startY = y;
+  axis = byFinger ? null : 'x';
   travelled = 0;
   spin = 0;
   pressed = target;
@@ -422,6 +433,18 @@ function dragStart(x, y, target) {
 }
 function dragMove(x, y) {
   if (!dragging) return;
+  if (axis === null) {
+    const acrossX = Math.abs(x - startX);
+    const acrossY = Math.abs(y - startY);
+    if (acrossX + acrossY < AXIS_SLOP) return;
+    axis = acrossY > acrossX * 1.2 ? 'y' : 'x';
+    lastX = x;
+    lastY = y;
+  }
+  if (axis === 'y') {
+    travelled = CLICK_SLOP; // a page swipe: the sphere stays as it is, and it is not a tap
+    return;
+  }
   const dx = x - lastX;
   const dy = y - lastY;
   travelled += Math.abs(dx) + Math.abs(dy);
@@ -453,7 +476,7 @@ window.addEventListener('mousemove', (event) => dragMove(event.pageX, event.page
 window.addEventListener('mouseup', dragEnd);
 scene.addEventListener(
   'touchstart',
-  (event) => dragStart(event.touches[0].pageX, event.touches[0].pageY, event.target),
+  (event) => dragStart(event.touches[0].pageX, event.touches[0].pageY, event.target, true),
   {
     passive: true,
   },
@@ -469,7 +492,11 @@ scene.addEventListener('touchend', dragEnd);
 export function layoutProjects() {
   const w = window.innerWidth;
   const h = window.innerHeight;
-  const scale = isStacked() ? Math.min(w / 620, h / 800) : Math.min(w / 1250, h / 620);
+  const scale = isPhone()
+    ? Math.min(w / 560, h / 720) // a phone: nearly the full width
+    : isStacked()
+      ? Math.min(w / 620, h / 800)
+      : Math.min(w / 1250, h / 620);
   orbit.style.setProperty('--dome-s', clamp(scale, 0.4, 3).toFixed(3));
 }
 
@@ -500,6 +527,9 @@ export function showProject(project) {
   hoverHold = false;
   pick(project);
 }
+
+/** True if the finger that just lifted from the sphere was spinning it, so the page must not treat it as a swipe. */
+export const sphereKeptTouch = () => axis === 'x' && travelled >= CLICK_SLOP;
 
 /** The project whose book is out, or -1. */
 export const selectedProject = () => (mode === 'none' ? -1 : selected);

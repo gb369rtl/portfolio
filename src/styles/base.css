@@ -104,3 +104,34 @@ noscript a {
   max-width: 52ch;
   color: var(--text-dim);
 }
+
+/* ---------- touch ---------- */
+html {
+  -webkit-tap-highlight-color: transparent; /* every control has its own pressed state */
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+}
+button,
+a,
+[role='button'] {
+  touch-action: manipulation; /* no wait for a second tap */
+}
+button,
+[role='button'],
+.dome-tile {
+  -webkit-user-select: none;
+  user-select: none; /* a long press must not select a control's label */
+  -webkit-touch-callout: none;
+}
+/* wording that depends on the input: "click" for a pointer, "tap" for a finger */
+.when-touch {
+  display: none;
+}
+@media (hover: none) and (pointer: coarse) {
+  .when-touch {
+    display: inline;
+  }
+  .when-mouse {
+    display: none;
+  }
+}
