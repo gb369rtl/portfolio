@@ -48,12 +48,13 @@ function drawText(ctx, el) {
     const stretch = parseFloat(style.fontStretch);
     // text on a filled shape is cut out of it
     ctx.globalCompositeOperation = node.parentElement.closest('[data-ink="fill"]') ? 'destination-out' : 'source-over';
-    ctx.font = `${style.fontStyle} ${style.fontWeight} ${style.fontSize} ${style.fontFamily}`;
-    if ('fontStretch' in ctx)
-      ctx.fontStretch = stretch < 70 ? 'extra-condensed' : stretch < 85 ? 'condensed' : 'normal';
+    // the width is named twice: in the shorthand, which every browser reads, and as the newer canvas property
+    const width = stretch < 70 ? 'extra-condensed' : stretch < 85 ? 'condensed' : 'normal';
+    ctx.font = `${style.fontStyle} ${style.fontWeight} ${width} ${style.fontSize} ${style.fontFamily}`;
+    if ('fontStretch' in ctx) ctx.fontStretch = width;
     const metrics = ctx.measureText('Hg');
-    const ascent = metrics.fontBoundingBoxAscent;
-    const descent = metrics.fontBoundingBoxDescent;
+    const ascent = metrics.fontBoundingBoxAscent ?? metrics.actualBoundingBoxAscent;
+    const descent = metrics.fontBoundingBoxDescent ?? metrics.actualBoundingBoxDescent;
     for (let i = 0; i < node.length; i++) {
       if (!node.data[i].trim()) continue;
       range.setStart(node, i);
