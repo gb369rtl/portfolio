@@ -2,6 +2,8 @@
 
 Geetam's portfolio: one page that tells a career as a git history. Scrolling **up** moves forward. Each section adds to a git tree on the left edge, the commands that would create it are "run" on the way in, and the tree is also the navigation: click any commit to go to that job or project.
 
+![The first screen: a headline on the left and a portrait set in letters on the right, with four name-tagged cursors at work](docs/screenshots/desktop-hero.jpg)
+
 It is plain HTML, CSS and JavaScript modules. There is no framework and no build step; what is in this repository is what the browser runs. Everything the page says lives in [`content/`](content/), apart from the code.
 
 ## Run it
@@ -28,7 +30,7 @@ All of it is in `content/`. After any edit, run `npm run check`: it reports the 
 | Projects: name, summary, stack, status        | `content/projects.json`                                                   |
 | A project's write-up and diagram              | `content/projects/<id>/`                                                  |
 | Page title, description and link preview      | `content/site.json`, then `npm run sync`                                  |
-| The resume PDF                                | replace `assets/Geetam-Resume.pdf` (source: `resume/resume.html`)         |
+| The resume PDF                                | edit `resume/resume.html`, then `npm run resume`                          |
 | The portrait                                  | replace `tools/portrait-source.jpg`, then `python tools/bake_portrait.py` |
 
 The full reference, field by field, is in [`docs/content.md`](docs/content.md). The short version:
@@ -92,18 +94,25 @@ The one place that scrolls is the inside of a project's book, which is a documen
 
 Small type has a floor of 11px so it stays legible when the page is scaled down.
 
+The same sections on a phone, and the sphere of projects on a wide screen:
+
+![Four phone screens: the first screen, experience, projects and contact](docs/screenshots/phone.jpg)
+
+![The projects section: a sphere of book covers, one per project, beside the git tree](docs/screenshots/desktop-projects.jpg)
+
 ## Scripts
 
-| Command          | What it does                                                          |
-| ---------------- | --------------------------------------------------------------------- |
-| `npm run dev`    | Serves the folder at `http://127.0.0.1:5173/` (`-- --port 8080`)      |
-| `npm run check`  | Validates `content/` and that `index.html` matches it                 |
-| `npm run sync`   | Rewrites the `<head>` and no-script line of `index.html` from content |
-| `npm test`       | Unit tests for the helpers, the git model and the content checker     |
-| `npm run lint`   | ESLint                                                                |
-| `npm run format` | Prettier                                                              |
-| `npm run verify` | Lint, formatting, content check and tests: what CI runs               |
-| `npm run build`  | Makes `dist/`: only the files a browser asks for                      |
+| Command          | What it does                                                                                     |
+| ---------------- | ------------------------------------------------------------------------------------------------ |
+| `npm run dev`    | Serves the folder at `http://127.0.0.1:5173/` (`-- --port 8080`)                                 |
+| `npm run check`  | Validates `content/` and that `index.html` matches it                                            |
+| `npm run sync`   | Rewrites the `<head>` and no-script line of `index.html` from content                            |
+| `npm test`       | Unit tests for the helpers, the git model and the content checker                                |
+| `npm run lint`   | ESLint                                                                                           |
+| `npm run format` | Prettier                                                                                         |
+| `npm run verify` | Lint, formatting, content check and tests: what CI runs                                          |
+| `npm run build`  | Makes `dist/`: only the files a browser asks for                                                 |
+| `npm run resume` | Prints `resume/resume.html` to the PDF the page links to, with the Chrome or Edge on the machine |
 
 ## Putting it online
 
