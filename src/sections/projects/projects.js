@@ -25,12 +25,14 @@ const REACH = 242;
 // Rings of books from pole to pole: the latitude in degrees, how large that ring's books are drawn, and the
 // least room left between neighbours. The rings are packed as closely as they go without one book covering
 // another: on the equator a slit between books, and away from it the corners nearer the pole all but touch.
+// The rings nearest the poles hold smaller books. A flat book fans away from its neighbours as it nears a
+// pole, and a smaller one fans less, so the caps stay closed instead of opening into wide wedges.
 const RINGS = [
-  { latitude: -57.5, size: 0.95, gap: 1 },
+  { latitude: -53.5, size: 0.75, gap: 1 },
   { latitude: -28, size: 1, gap: 1 },
   { latitude: 0, size: 1, gap: 6 },
   { latitude: 28, size: 1, gap: 1 },
-  { latitude: 57.5, size: 0.95, gap: 1 },
+  { latitude: 53.5, size: 0.75, gap: 1 },
 ];
 
 // How many books a ring holds. A book is flat, so away from the equator the edge nearer the pole sits on a
