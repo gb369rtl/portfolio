@@ -86,28 +86,41 @@ const inkWidth = (el) => {
   return range.getBoundingClientRect().width;
 };
 
-// The portrait keeps its place (on the right, or on top when stacked) and the words take the room beside it,
-// nearer the portrait than the page edge. Returns the height the words may use.
-function place() {
-  const w = hero.clientWidth;
-  const h = hero.clientHeight;
-  const u = unitOf(hero);
-  const stacked = isStacked();
-  const height = stacked ? Math.min(h * 0.38, w * 0.9) : Math.min(h * 0.86, w * 0.48);
+function placePhoto(cx, cy, height) {
   const width = height * ASPECT;
-  const cx = stacked ? w / 2 : w * 0.705;
-  const cy = stacked ? h * 0.22 : h * 0.535;
   photo.style.left = `${cx - width / 2}px`;
   photo.style.top = `${cy - height / 2}px`;
   photo.style.width = `${width}px`;
   photo.style.height = `${height}px`;
+  return width;
+}
 
-  if (stacked) {
+// Places the portrait and the words, and returns the height the words may use.
+function place() {
+  const w = hero.clientWidth;
+  const h = hero.clientHeight;
+  const u = unitOf(hero);
+
+  if (isStacked()) {
+    // Stacked: the words sit at the foot of the screen and the portrait takes all the room above them,
+    // under the name. The words must leave the portrait at least a quarter of the screen.
     text.style.width = '';
     text.style.left = '';
     hero.style.removeProperty('--text-left');
-    return h - (cy + height / 2) - 26 * u; // below the portrait, above the bottom margin
+    const top = 50 * u;
+    const gap = 16 * u;
+    const textTop = text.offsetTop;
+    const smallest = h * 0.26;
+    const room = Math.max(smallest, textTop - gap - top);
+    const height = Math.min(room, (w * 0.9) / ASPECT);
+    placePhoto(w / 2, top + room / 2, height);
+    return h - top - smallest - gap - (h - textTop - text.offsetHeight);
   }
+
+  // Side by side: the portrait keeps its place on the right and the words take the room beside it, nearer the
+  // portrait than the page edge.
+  const cx = w * 0.705;
+  const width = placePhoto(cx, h * 0.535, Math.min(h * 0.86, w * 0.48));
   const clear = parseFloat(getComputedStyle(hero).paddingLeft) || 20 * u;
   const edge = cx - width / 2;
   text.style.width = `${Math.max(320 * u, Math.min(620 * u, edge - clear * 2))}px`;
