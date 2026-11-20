@@ -108,7 +108,7 @@
   justify-content: center;
   perspective: 1100px;
   cursor: grab;
-  touch-action: pan-y;
+  touch-action: none; /* the page handles every drag on the sphere */
   opacity: 0;
   transform: scale(0.6);
   transition:
@@ -329,5 +329,46 @@
   }
   #orbit-name {
     min-width: 0;
+  }
+}
+
+@media (max-width: 599px) and (orientation: portrait) {
+  .orbit {
+    height: calc(100 * var(--vh));
+  }
+  .orbit-tl {
+    top: calc(14 * var(--u));
+    left: 0;
+  }
+  .orbit-tr {
+    top: calc(16 * var(--u));
+  }
+  /* how the sphere works, said under it: there is no room for the list of names a wide screen shows */
+  .orbit-bl {
+    display: block;
+    left: 0;
+    right: 0;
+    bottom: calc(74 * var(--u));
+    max-width: none;
+    padding: 0 calc(10 * var(--u));
+    text-align: center;
+    font-size: max(11px, calc(13.5 * var(--u)));
+  }
+  .orbit-pill {
+    bottom: calc(14 * var(--u));
+  }
+  .orbit-pill button {
+    min-height: max(44px, calc(46 * var(--u)));
+  }
+  #orbit-btn {
+    width: max(44px, calc(46 * var(--u)));
+  }
+  #orbit-name {
+    padding: 0 calc(14 * var(--u));
+  }
+}
+@media (max-width: 599px) and (orientation: portrait) and (max-height: 620px) {
+  .orbit-bl {
+    display: none;
   }
 }

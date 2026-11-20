@@ -149,3 +149,72 @@ footer.contact-foot {
 [data-key='contact'] .bio {
   margin-bottom: calc(22 * var(--u));
 }
+
+@media (max-width: 599px) and (orientation: portrait) {
+  .tag-line {
+    margin-bottom: calc(10 * var(--u));
+  }
+  [data-key='contact'] h2 {
+    font-size: calc(58 * var(--u));
+    margin-bottom: calc(12 * var(--u));
+  }
+  [data-key='contact'] .bio {
+    font-size: calc(16 * var(--u));
+    margin-bottom: calc(12 * var(--u));
+  }
+  /* the address on its own line, then the links in a row, each a full-size tap target */
+  .links {
+    display: grid;
+    grid-template-columns: repeat(3, auto);
+    justify-content: start;
+    gap: 0 calc(24 * var(--u));
+    margin-bottom: calc(12 * var(--u));
+  }
+  .links .mail {
+    grid-column: 1 / -1;
+    justify-self: start;
+    font-size: calc(29 * var(--u));
+    min-height: max(44px, calc(46 * var(--u)));
+  }
+  .links a {
+    min-height: max(44px, calc(44 * var(--u)));
+    font-size: calc(17 * var(--u));
+  }
+  footer.contact-foot {
+    font-size: max(11px, calc(13 * var(--u)));
+  }
+  .release {
+    margin-top: calc(14 * var(--u));
+    max-width: none;
+  }
+  .release-cmd {
+    margin-bottom: calc(8 * var(--u));
+  }
+  #release-list button {
+    grid-template-columns: calc(84 * var(--u)) minmax(0, 1fr);
+    align-items: center;
+    min-height: max(44px, calc(44 * var(--u)));
+    padding: calc(4 * var(--u)) 0;
+    font-size: calc(15 * var(--u));
+  }
+  .release-note {
+    margin-top: calc(8 * var(--u));
+  }
+}
+
+/* a short phone: tighter, and without the line that says the rows can be tapped */
+@media (max-width: 599px) and (orientation: portrait) and (max-height: 620px) {
+  .tag-line {
+    margin-bottom: calc(8 * var(--u));
+  }
+  [data-key='contact'] h2 {
+    font-size: calc(50 * var(--u));
+    margin-bottom: calc(10 * var(--u));
+  }
+  .release {
+    margin-top: calc(10 * var(--u));
+  }
+  .release-note {
+    display: none;
+  }
+}

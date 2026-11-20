@@ -11,6 +11,11 @@ const SMALLEST = 0.55; // a section is never drawn below this share of the page'
 /** True where the layout is one column and the git tree is a menu: portrait screens and narrow windows. */
 export const isStacked = () => STACKED.matches;
 
+const PHONE = window.matchMedia('(max-width: 599px) and (orientation: portrait)');
+
+/** True on a phone held upright, which has the stacked layout at its own sizes. */
+export const isPhone = () => PHONE.matches;
+
 const probes = new WeakMap();
 
 /** The size of one design pixel inside `el`, in real pixels. */

@@ -397,3 +397,59 @@
     padding-left: calc(10 * var(--u));
   }
 }
+
+@media (max-width: 599px) and (orientation: portrait) {
+  #log-open {
+    width: max(44px, calc(44 * var(--u)));
+    min-height: max(44px, calc(44 * var(--u)));
+  }
+  /* As a menu on a phone the list scrolls: nineteen commits cannot each be a full-size tap target on one screen.
+     Only commits that have been drawn are listed. */
+  #graph-wrap.menu #gg-full {
+    padding: 62px 0 0;
+  }
+  #graph-wrap.menu .gg-cols {
+    display: none;
+  }
+  #graph-wrap.menu .gg-body {
+    overflow-y: auto;
+    overscroll-behavior: contain;
+  }
+  #graph-wrap.menu #gg-rows {
+    position: static;
+    display: block;
+    padding-bottom: calc(64 * var(--u));
+  }
+  #graph-wrap.menu .gg-row {
+    min-height: max(44px, calc(46 * var(--u)));
+    font-size: calc(15 * var(--u));
+  }
+  #graph-wrap.menu .gg-row:not(.on) {
+    display: none;
+  }
+}
+
+/* on a phone the menu's one line of help sits at the top, as its title, clear of the list */
+@media (max-width: 599px) and (orientation: portrait) {
+  #graph-wrap.menu ~ #skip-hint {
+    top: 0;
+    bottom: auto;
+    left: calc(20 * var(--u));
+    display: flex;
+    align-items: center;
+    height: 62px;
+    transform: none;
+    font-size: calc(15 * var(--u));
+    font-weight: 650;
+    color: var(--text);
+  }
+}
+
+/* On a phone the commit table has room for the tree and one thing per row: the branch name where a commit has
+   one, its message where it has not. */
+@media (max-width: 599px) and (orientation: portrait) {
+  #graph-wrap:not(.menu) .gg-row .gg-ref:not(.gg-hp) ~ .gg-msg,
+  #graph-wrap:not(.menu) .gg-msg b {
+    display: none;
+  }
+}

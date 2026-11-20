@@ -458,3 +458,59 @@
     display: none;
   }
 }
+
+/* the hint is a button: a tap on it starts the story */
+#scroll-hint {
+  border: 0;
+  background: none;
+  padding: 0;
+  cursor: pointer;
+  font-family: inherit;
+  line-height: inherit;
+}
+@media (max-width: 599px) and (orientation: portrait) {
+  .hero-btn {
+    min-height: max(44px, calc(44 * var(--u)));
+  }
+  .hero-social a {
+    min-width: max(44px, calc(44 * var(--u)));
+    height: max(44px, calc(44 * var(--u)));
+  }
+  #scroll-hint {
+    bottom: calc(14 * var(--u));
+    min-height: max(44px, calc(44 * var(--u)));
+  }
+}
+
+/* a short phone: the words take a little less, so the portrait keeps its size */
+@media (max-width: 599px) and (orientation: portrait) and (max-height: 620px) {
+  #hero-text {
+    bottom: calc(10 * var(--u));
+  }
+  .hero-intro {
+    gap: calc(6 * var(--u));
+  }
+  #hero-text h1 {
+    font-size: calc(28 * var(--u));
+    margin-top: calc(6 * var(--u));
+  }
+  #hero-text .bio {
+    margin-top: calc(8 * var(--u));
+    font-size: calc(14 * var(--u));
+  }
+  .hero-actions {
+    margin-top: calc(12 * var(--u));
+    gap: calc(2 * var(--u));
+  }
+  #scroll-hint {
+    bottom: calc(8 * var(--u));
+  }
+}
+
+/* under a finger the hint gets a full-size target, without moving where it is drawn */
+@media (pointer: coarse) {
+  #scroll-hint {
+    min-height: 44px;
+    margin-bottom: -11px;
+  }
+}
