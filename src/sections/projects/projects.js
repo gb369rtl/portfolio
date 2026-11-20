@@ -24,6 +24,9 @@ const LIFT = 34; // how far the chosen book comes forward
 const REACH = 242;
 const ROW_GAP = 3; // the room between a ring of books and the ring above it
 const SIDE_GAP = 3; // the room between two books side by side, measured where they come closest
+// On the equator two books are that close along their whole height, where in every other ring they only come
+// that close at one corner and fan apart from there. The same gap reads tighter here, so it gets a little more.
+const EQUATOR_GAP = 5;
 // About how large the books are in each ring, from the equator to a pole. The ring nearest a pole holds
 // smaller books: a flat book fans away from its neighbours as it nears a pole, and a smaller one fans less,
 // so the cap stays closed instead of opening into wide wedges.
@@ -31,10 +34,10 @@ const RING_SIZES = [1, 1, 0.7];
 
 // One ring, resting ROW_GAP above `below` (the height the ring under it reaches; null for the equator).
 // A whole number of books has to go round, so the size asked for is adjusted a little, up or down, until the
-// books stand exactly SIDE_GAP apart. A book is a flat tile touching the sphere at its centre, so away from
+// books stand exactly `gap` apart. A book is a flat tile touching the sphere at its centre, so away from
 // the equator its edge nearer the pole sits on a smaller circle than its centre does; that edge is where
 // neighbours come closest, and it is the one measured.
-function fitRing(wanted, below) {
+function fitRing(wanted, below, gap) {
   let size = wanted;
   let books = 0;
   let angle = 0;
@@ -43,8 +46,8 @@ function fitRing(wanted, below) {
     // the latitude that puts the lower edge, at height RADIUS sin(a) - half cos(a), ROW_GAP above the ring below
     angle = below === null ? 0 : Math.asin((below + ROW_GAP) / Math.hypot(RADIUS, half)) + Math.atan(half / RADIUS);
     const around = 2 * Math.PI * (RADIUS * Math.cos(angle) - half * Math.sin(angle));
-    if (pass === 0) books = Math.max(3, Math.round(around / (BOOK_W * wanted + SIDE_GAP)));
-    size = (around / books - SIDE_GAP) / BOOK_W; // a different size moves the ring a little: go round again
+    if (pass === 0) books = Math.max(3, Math.round(around / (BOOK_W * wanted + gap)));
+    size = (around / books - gap) / BOOK_W; // a different size moves the ring a little: go round again
   }
   const half = (BOOK_H * size) / 2;
   return {
@@ -57,11 +60,11 @@ function fitRing(wanted, below) {
 
 // The rings of books from pole to pole, packed as closely as they go without one book covering another.
 const RINGS = (() => {
-  const equator = fitRing(RING_SIZES[0], null);
+  const equator = fitRing(RING_SIZES[0], null, EQUATOR_GAP);
   const upper = [];
   let below = equator.top;
   for (const wanted of RING_SIZES.slice(1)) {
-    const ring = fitRing(wanted, below);
+    const ring = fitRing(wanted, below, SIDE_GAP);
     upper.push(ring);
     below = ring.top;
   }
