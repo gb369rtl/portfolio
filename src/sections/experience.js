@@ -177,21 +177,21 @@ async function pull(index) {
   }
 }
 
+/** The job on the page, or -1 before the section has been visited. */
+export const shownExperience = () => shownJob;
+
 /**
- * Called each time the section is entered. Every visit starts over: the page is empty again and the hand
- * shows the move once more.
- * @param {number | null} jobIndex the job whose commit was clicked in the tree; null for the latest one
+ * Called each time the section is entered. The first time, the hand brings the latest job onto the page. After
+ * that the section is left as the visitor left it, unless a different job was asked for.
+ * @param {number | null} jobIndex the job whose commit was clicked in the tree; null when the section was reached by scrolling
  */
 export function enterExperience(jobIndex) {
-  const wanted = jobIndex ?? experience.length - 1;
+  const wanted = jobIndex ?? (shownJob >= 0 ? shownJob : experience.length - 1);
   if (busy) {
     queued = wanted;
     return;
   }
-  shownJob = -1;
-  cards.forEach((card) => card.classList.remove('shown'));
-  rail.classList.remove('invite');
-  buttons.forEach((button) => button.classList.remove('active', 'seen'));
+  if (wanted === shownJob) return; // already on the page
   if (reduceMotion) {
     show(wanted);
     rail.classList.add('invite');
