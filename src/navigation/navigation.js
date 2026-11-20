@@ -8,9 +8,17 @@ import { app, overlay, graphWrap, sectionEls, track } from '../core/dom.js';
 import { reduceMotion } from '../core/env.js';
 import { registerNavigation } from '../core/router.js';
 import { isOn, SECTIONS, state } from '../core/state.js';
-import { COMMITS, commitRef, hoverCommit, revealStage, setHeadCommit, setHeadSection } from '../graph/graph.js';
+import {
+  COMMITS,
+  commitRef,
+  HEAD_ROW,
+  hoverCommit,
+  revealStage,
+  setHeadCommit,
+  setHeadSection,
+} from '../graph/graph.js';
 import { wait } from '../lib/util.js';
-import { enterExperience } from '../sections/experience.js';
+import { enterExperience, shownExperience } from '../sections/experience.js';
 import {
   closeBooks,
   isReading,
@@ -41,6 +49,14 @@ async function goTo(toIndex, nav) {
   state.isTransitioning = true;
   hoverCommit(-1);
   const from = state.current;
+
+  // Coming back to Experience by scrolling returns to the job that was open, so its commit is the one checked
+  // out. Without this HEAD would sit on the latest job while the page showed another.
+  const openJob = shownExperience();
+  if (!nav && SECTIONS[toIndex] === 'experience' && toIndex <= state.maxReached && openJob >= 0) {
+    const commit = HEAD_ROW[0] + 1 + openJob;
+    nav = { commit, ref: commitRef(commit), kind: 'exp', item: openJob };
+  }
 
   // a jump over unseen sections draws their part of the tree first, so the tree is never missing a piece
   for (let passed = state.maxReached + 1; passed < toIndex; passed++) revealStage(passed);
