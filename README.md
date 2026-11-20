@@ -84,7 +84,7 @@ More detail, including how modules depend on each other, is in [`docs/architectu
 
 Every section fits the screen, on a tablet, a laptop or a 32-inch monitor, so a visitor never scrolls inside a section and then again to leave it. Three things make that hold:
 
-1. **One unit.** The page is drawn for a 1536 x 695 window, and every length in the stylesheets is a multiple of `--u`, one design pixel. `tokens.css` sets `--u` from the window, so the drawing grows and shrinks as a whole.
+1. **One unit.** The page is drawn for a window 695 units tall, and every length in the stylesheets is a multiple of `--u`, one design pixel. `tokens.css` sets `--u` from the window: as large as the height allows, as long as the width keeps the 1180 units the layout needs. The drawing therefore grows and shrinks as a whole, with no jump at any width.
 2. **Two layouts.** Landscape screens get the side-by-side layout with the git tree on the left. Portrait screens and narrow windows get a stacked layout, with the tree behind a menu button.
 3. **A safety net.** After layout, `scale.js` measures each section. If one is still taller than the screen, that section's own `--u` is lowered until it fits.
 

@@ -37,24 +37,20 @@
   --font-read: 'Source Serif 4', Georgia, 'Times New Roman', serif;
   --font-mono: 'JetBrains Mono', 'Cascadia Code', Consolas, ui-monospace, monospace;
 
-  /* One design pixel. The page is drawn for a 1536 x 695 window and every length is a multiple of --u, so the
-     same drawing fits a small laptop and a 32-inch monitor without scrolling. Above the design size it grows a
-     little slower than the window, so a large monitor gains room as well as size.
+  /* One design pixel. The page is drawn for a window 695 units tall, and every length is a multiple of --u, so
+     the same drawing fits a small laptop and a 32-inch monitor without scrolling. The unit is as large as the
+     window's height allows, as long as the width keeps at least 1180 units (the least the side-by-side layout
+     needs). Above its drawn size the page grows slower than the window, so a large monitor gains room as well
+     as size.
      --u0 is the page's unit; a section that would not fit lowers its own --u (see src/core/scale.js). */
   --vh: 1vh;
-  --raw: min(100vw / 1536, var(--vh) * 100 / 695);
-  --u0: min(var(--raw), 0.2px + 0.8 * var(--raw));
+  --raw: min(100vw / 1180, var(--vh) * 100 / 695);
+  --u0: min(var(--raw), 0.3px + 0.7 * var(--raw));
   --u: var(--u0);
 }
 @supports (height: 1dvh) {
   :root {
     --vh: 1dvh;
-  }
-}
-/* a landscape tablet has height to spare and little width: the same layout, measured against a narrower drawing */
-@media (max-width: 1240px) and (orientation: landscape) {
-  :root {
-    --raw: min(100vw / 1180, var(--vh) * 100 / 695);
   }
 }
 /* portrait screens and narrow windows get the stacked layout, drawn for a 390 x 700 phone and grown gently with width */

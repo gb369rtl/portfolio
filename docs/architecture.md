@@ -63,13 +63,12 @@ A pause inside a ceremony goes through `sleep()` in `ceremony/hammer.js`, not a 
 
 Every length in `src/styles/` is `calc(N * var(--u))`. `tokens.css` defines `--u0`, the page's unit, from the window:
 
-| Screen                           | Reference drawing | `--u0`                                       |
-| -------------------------------- | ----------------- | -------------------------------------------- |
-| Landscape, wider than 1240px     | 1536 x 695        | the smaller of width / 1536 and height / 695 |
-| Landscape, 901 to 1240px         | 1180 x 695        | the smaller of width / 1180 and height / 695 |
-| Portrait, or narrower than 901px | 390 x 700         | as above, growing gently with width          |
+| Screen                          | Drawn for         | `--u0`                                                                         |
+| ------------------------------- | ----------------- | ------------------------------------------------------------------------------ |
+| Landscape, wider than 900px     | 695 units tall    | the smaller of height / 695 and width / 1180                                   |
+| Portrait, or 900px and narrower | a 390 x 700 phone | the smaller of width / 390 and height / 700, capped by a gentle slope in width |
 
-Above the design size the unit grows a little slower than the window, so a large monitor gains room as well as size.
+The landscape rule has no breakpoint in it, so the page never changes size abruptly as a window is resized. 1180 units is the least width the side-by-side layout needs. Above its drawn size the unit grows slower than the window (0.7 of the way), so a large monitor gains room as well as size.
 
 `--u` is `--u0` unless a section overrides it. `core/scale.js` measures each section that has `data-fit` on its content box and, if the content is taller than the screen, sets that section's `--u` to a share of `--u0` until it fits. Scripts that place things in pixels (the tree, the hero's layout, the animations) read the same unit through `unitOf(element)`.
 

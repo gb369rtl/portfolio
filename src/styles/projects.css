@@ -318,12 +318,6 @@
   }
 }
 
-@media (max-width: 1240px) {
-  .orbit-bl {
-    bottom: calc(78 * var(--u));
-  }
-}
-
 @media (max-width: 900px), (orientation: portrait) {
   .orbit-tr {
     right: calc(60 * var(--u));
