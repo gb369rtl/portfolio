@@ -2,7 +2,7 @@
 // carries it onto the page, where its work is listed as commit lines.
 
 import { experience } from '../core/content.js';
-import { byId, sectionEl } from '../core/dom.js';
+import { app, byId, sectionEl } from '../core/dom.js';
 import { reduceMotion } from '../core/env.js';
 import { unitOf } from '../core/scale.js';
 import { isOn, state } from '../core/state.js';
@@ -53,15 +53,23 @@ detail.innerHTML = experience
   .join('');
 const cards = [...detail.children];
 
+// The hand, the press ring and the lifted name travel across the whole page, so they cannot live in the
+// section (the sections sit in a track that is moved with a transform). They have a layer of their own, above
+// the sections and below the cover that comes up when the page changes, so that cover hides them too.
+const floats = document.createElement('div');
+floats.id = 'exp-float';
+floats.setAttribute('aria-hidden', 'true');
+app.appendChild(floats);
+
 const hand = document.createElement('div');
 hand.id = 'grab-hand';
-hand.setAttribute('aria-hidden', 'true');
 hand.innerHTML = HAND;
-document.body.appendChild(hand);
+floats.appendChild(hand);
 
 let busy = false;
 let shownJob = -1;
-let queued = null;
+let pulls = 0; // counts the hand's runs; a run that finds a newer number has been called off
+let onItsWay = -1; // the job the hand is carrying
 
 function show(index) {
   shownJob = index;
@@ -78,13 +86,12 @@ const at = (x, y) => `translate(${x.toFixed(1)}px, ${y.toFixed(1)}px)`;
 const move = (el, from, to, duration, easing = EASE_OUT) =>
   el.animate([{ transform: from }, { transform: to }], { duration, easing, fill: 'forwards' }).finished;
 
-// The hand, the press ring and the lifted name are drawn over the whole page, outside the section, so they are
-// given the section's unit to stay the same size as what they point at.
+// Outside the section they do not get its unit, so they are given it, to stay the size of what they point at.
 function floating(className, u) {
   const el = document.createElement('div');
   el.className = className;
   el.style.setProperty('--u', `${u}px`);
-  document.body.appendChild(el);
+  floats.appendChild(el);
   return el;
 }
 
@@ -95,6 +102,9 @@ async function pull(index) {
     return;
   }
   busy = true;
+  onItsWay = index;
+  const run = ++pulls;
+  const calledOff = () => run !== pulls; // checked after every pause: the visitor may have left meanwhile
   const u = unitOf(section);
   hand.style.setProperty('--u', `${u}px`);
   const button = buttons.find((b) => +b.dataset.i === index);
@@ -106,6 +116,7 @@ async function pull(index) {
   hand.classList.remove('closed');
   hand.classList.add('on');
   await move(hand, at(window.innerWidth + 40 * u, window.innerHeight * 0.75), at(handX, handY), 560);
+  if (calledOff()) return;
 
   // the hand presses the commit first, the way a visitor would click it
   hand.classList.add('press');
@@ -124,9 +135,11 @@ async function pull(index) {
     )
     .finished.then(() => ring.remove());
   await wait(240);
+  if (calledOff()) return;
   hand.classList.remove('press');
   button.classList.remove('pressed');
   await wait(90);
+  if (calledOff()) return;
 
   // then closes on it
   hand.classList.add('closed');
@@ -138,6 +151,7 @@ async function pull(index) {
   button.classList.add('lifted');
   detail.querySelector('.exp-card.shown')?.classList.remove('shown');
   await wait(160);
+  if (calledOff()) return;
 
   // and carries it across to the page
   const targetX = page.left;
@@ -154,6 +168,7 @@ async function pull(index) {
     ),
     move(hand, at(handX, handY), at(handX + dx + 40 * u, handY + dy + 16 * u), 760, DRAG),
   ]);
+  if (calledOff()) return;
   hand.classList.remove('closed');
   show(index);
   ghost
@@ -166,19 +181,34 @@ async function pull(index) {
     at(handX + dx - 30 * u, window.innerHeight + 70 * u),
     320,
   );
+  if (calledOff()) return;
   hand.classList.remove('on');
   rail.classList.add('invite'); // the commits nobody has opened yet now ask to be clicked
   busy = false;
-
-  if (queued !== null) {
-    const next = queued;
-    queued = null;
-    pull(next);
-  }
 }
 
 /** The job on the page, or -1 before the section has been visited. */
 export const shownExperience = () => shownJob;
+
+/**
+ * Called when the page starts to leave the section. A hand in the middle of its work is called off, where it
+ * would otherwise carry on while the git commands are hammered in.
+ *
+ * If a job was already on the page, the one the hand was bringing takes its place at once, so the section is
+ * whole when the visitor comes back. If nothing was on the page yet (the first visit, left before the hand had
+ * finished), nothing is put there: the visit does not count, and the hand starts over on the way back.
+ */
+export function leaveExperience() {
+  if (!busy) return;
+  pulls++; // the run in progress stops at its next step
+  busy = false;
+  hand.classList.remove('on', 'closed', 'press');
+  floats.querySelectorAll('.exp-ghost, .exp-press').forEach((el) => el.remove());
+  buttons.forEach((button) => button.classList.remove('lifted', 'pressed'));
+  if (shownJob < 0) return;
+  show(onItsWay);
+  rail.classList.add('invite');
+}
 
 /**
  * Called each time the section is entered. The first time, the hand brings the latest job onto the page. After
@@ -187,10 +217,6 @@ export const shownExperience = () => shownJob;
  */
 export function enterExperience(jobIndex) {
   const wanted = jobIndex ?? (shownJob >= 0 ? shownJob : experience.length - 1);
-  if (busy) {
-    queued = wanted;
-    return;
-  }
   if (wanted === shownJob) return; // already on the page
   if (reduceMotion) {
     show(wanted);
