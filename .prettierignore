@@ -1,0 +1,8 @@
+node_modules/
+dist/
+package-lock.json
+assets/
+# partly written by "npm run sync"
+index.html
+# a print document, laid out by hand
+resume/

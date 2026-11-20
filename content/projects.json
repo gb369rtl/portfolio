@@ -1,0 +1,366 @@
+[
+  {
+    "id": "approval-agents",
+    "name": "Approval Agents",
+    "tagline": "agent pipeline that routes vendor approvals through human review",
+    "status": "shipped",
+    "summary": "A production agent system that reads vendor emails and attachments, matches them to approval records, and sends every action through human review.",
+    "stack": ["NestJS 11", "Nx", "PostgreSQL", "Redis Streams", "React 19", "MCP", "Zod", "Langfuse"],
+    "repo": null,
+    "sourceNote": "Built at Wisflux. The source is private.",
+    "highlights": [
+      {
+        "type": "feat",
+        "scope": "pipeline",
+        "text": "eight-phase pipeline from triage to a human-approved commit"
+      },
+      {
+        "type": "feat",
+        "scope": "mcp",
+        "text": "43 read-only MCP tools, scoped per phase"
+      },
+      {
+        "type": "feat",
+        "scope": "mail",
+        "text": "Gmail, Outlook and IMAP ingestion with encrypted storage"
+      },
+      {
+        "type": "feat",
+        "scope": "review",
+        "text": "React review desk graded by model confidence"
+      },
+      {
+        "type": "test",
+        "scope": "evals",
+        "text": "nightly replay of real cases and a tool-parity gate"
+      }
+    ],
+    "writeup": ["overview", "architecture", "technical", "product"]
+  },
+  {
+    "id": "pay-bot",
+    "name": "Pay Bot",
+    "tagline": "chat and voice agent that fills payment forms for approval",
+    "status": "shipped",
+    "summary": "A conversational agent that turns a typed or spoken request into a validated payment form that a person submits for approval. It runs on a 4B local model on a 6 GB GPU.",
+    "stack": ["FastAPI", "llama.cpp", "Qwen 4B", "MySQL", "React", "faster-whisper", "Piper", "Cosmic Ray"],
+    "repo": null,
+    "sourceNote": "Freelance client work. The source is private.",
+    "highlights": [
+      {
+        "type": "feat",
+        "scope": "rules",
+        "text": "rule engine as the source of truth, with the model limited to proposing values"
+      },
+      {
+        "type": "perf",
+        "scope": "turn",
+        "text": "median turn cut from 16.9 s to about 2 s by making one model call where there were three"
+      },
+      {
+        "type": "feat",
+        "scope": "forms",
+        "text": "form-generic packages, so a new form is configuration, not code"
+      },
+      {
+        "type": "feat",
+        "scope": "voice",
+        "text": "speech in and out with faster-whisper and Piper"
+      },
+      {
+        "type": "test",
+        "scope": "evals",
+        "text": "evals on the real API, plus mutation testing"
+      }
+    ],
+    "writeup": ["overview", "architecture", "technical", "product"]
+  },
+  {
+    "id": "agent-manager",
+    "name": "Agent Manager",
+    "tagline": "desktop app that runs coding agents in parallel worktrees",
+    "status": "shipped",
+    "summary": "A native desktop app in Rust that runs several coding agents at once, each in its own git worktree, with live output and steering.",
+    "stack": ["Rust", "iced", "tokio", "git worktrees"],
+    "repo": null,
+    "sourceNote": "Personal project. Not public yet.",
+    "highlights": [
+      {
+        "type": "feat",
+        "scope": "supervisor",
+        "text": "process supervisor running agents in parallel, one worktree each"
+      },
+      {
+        "type": "feat",
+        "scope": "stream",
+        "text": "NDJSON stream parser feeding a live transcript"
+      },
+      {
+        "type": "feat",
+        "scope": "steer",
+        "text": "send new instructions to an agent mid-session, or interrupt it"
+      },
+      {
+        "type": "test",
+        "scope": "fake",
+        "text": "112 tests against a fake agent binary"
+      }
+    ],
+    "writeup": ["overview", "architecture", "technical", "product"]
+  },
+  {
+    "id": "session-memory",
+    "name": "Session Memory",
+    "tagline": "memory layer that files and recalls coding-agent sessions",
+    "status": "shipped",
+    "summary": "Memory for coding-agent sessions: hooks file each session into a notes vault by project, a small model tags and summarizes it, and the next session starts with that context.",
+    "stack": ["Python", "Claude Code hooks", "Anthropic SDK", "Obsidian", "ChromaDB"],
+    "repo": null,
+    "sourceNote": "Personal project, built on the open-source mempalace tool. Not public yet.",
+    "highlights": [
+      {
+        "type": "feat",
+        "scope": "hooks",
+        "text": "hooks on session start, stop and compaction that never block a session"
+      },
+      {
+        "type": "feat",
+        "scope": "route",
+        "text": "file each turn under the right project, even when the session moved"
+      },
+      {
+        "type": "feat",
+        "scope": "distill",
+        "text": "tag every turn and write a summary with decisions and follow-ups"
+      },
+      {
+        "type": "feat",
+        "scope": "search",
+        "text": "command-line search by keyword, topic, file, date and project"
+      }
+    ],
+    "writeup": ["overview", "architecture", "technical", "product"]
+  },
+  {
+    "id": "markup-check",
+    "name": "Markup Check",
+    "tagline": "vision pipeline that verifies reviewer markups across PDF revisions",
+    "status": "shipped",
+    "summary": "A vision pipeline that finds reviewer markups on engineering PDFs and checks whether the next revision addressed them.",
+    "stack": ["FastAPI", "YOLO", "PaddleOCR", "GPT-4o vision", "NestJS", "Prisma", "React", "SLURM"],
+    "repo": null,
+    "sourceNote": "Built at Wisflux. The source is private.",
+    "highlights": [
+      {
+        "type": "feat",
+        "scope": "detect",
+        "text": "YOLO markup detector trained on synthetic pages on a SLURM GPU cluster"
+      },
+      {
+        "type": "feat",
+        "scope": "match",
+        "text": "page matching across revisions with text, embeddings and perceptual hashes"
+      },
+      {
+        "type": "feat",
+        "scope": "verify",
+        "text": "a verdict for each comment from GPT-4o, with a confidence"
+      },
+      {
+        "type": "feat",
+        "scope": "app",
+        "text": "review app with live progress over SSE"
+      }
+    ],
+    "writeup": ["overview", "architecture", "technical", "product"]
+  },
+  {
+    "id": "issue-to-pr",
+    "name": "Issue to PR",
+    "tagline": "design for a coding agent that takes an issue to a pull request",
+    "status": "design",
+    "summary": "A coding agent that reads a GitHub issue, reproduces it with a failing test, fixes the code in a sandbox, and opens a pull request with its evidence. Every tool is reached over MCP.",
+    "stack": ["Python", "MCP", "Docker", "GitHub App", "pytest", "SWE-bench"],
+    "repo": null,
+    "highlights": [
+      {
+        "type": "docs",
+        "scope": "mcp",
+        "text": "repository, shell and test tools exposed as MCP servers"
+      },
+      {
+        "type": "docs",
+        "scope": "loop",
+        "text": "locate, reproduce, fix, verify, with three attempts at most"
+      },
+      {
+        "type": "docs",
+        "scope": "score",
+        "text": "resolve rate on SWE-bench Verified tasks and my own issue set"
+      }
+    ],
+    "writeup": ["overview", "architecture", "technical", "build", "product"]
+  },
+  {
+    "id": "deep-research",
+    "name": "Deep Research",
+    "tagline": "design for a supervisor agent that writes cited reports",
+    "status": "design",
+    "summary": "A supervisor agent that plans a question, sends searchers out in parallel, and writes a report in which every claim is checked against the passage it cites.",
+    "stack": ["Python", "LangGraph", "FastAPI", "PostgreSQL"],
+    "repo": null,
+    "highlights": [
+      {
+        "type": "docs",
+        "scope": "graph",
+        "text": "planner, parallel searchers, writer and checker passing typed state"
+      },
+      {
+        "type": "docs",
+        "scope": "cite",
+        "text": "every sentence in the report tied to a stored passage"
+      },
+      {
+        "type": "docs",
+        "scope": "score",
+        "text": "citation precision and coverage on a fixed question set"
+      }
+    ],
+    "writeup": ["overview", "architecture", "technical", "build", "product"]
+  },
+  {
+    "id": "trajectory-gate",
+    "name": "Trajectory Gate",
+    "tagline": "design for a CI gate that replays agent tool calls",
+    "status": "design",
+    "summary": "A check on every pull request that replays recorded agent runs and blocks the merge when the sequence of tool calls drifts from the approved one.",
+    "stack": ["Python", "pytest", "GitHub Actions", "OpenTelemetry"],
+    "repo": null,
+    "highlights": [
+      {
+        "type": "docs",
+        "scope": "record",
+        "text": "record every run as an ordered list of tool calls"
+      },
+      {
+        "type": "docs",
+        "scope": "replay",
+        "text": "replay approved runs offline against the new build"
+      },
+      {
+        "type": "docs",
+        "scope": "gate",
+        "text": "fail the check when a run skips, adds or reorders a step"
+      }
+    ],
+    "writeup": ["overview", "architecture", "technical", "build", "product"]
+  },
+  {
+    "id": "agent-tracer",
+    "name": "Agent Tracer",
+    "tagline": "design for agent tracing with a budget guard",
+    "status": "design",
+    "summary": "OpenTelemetry spans for every model call and tool call, with cost on each one, and a guard that stops a runaway run or moves it to a cheaper model.",
+    "stack": ["Python", "OpenTelemetry", "Langfuse", "FastAPI"],
+    "repo": null,
+    "highlights": [
+      {
+        "type": "docs",
+        "scope": "spans",
+        "text": "a span per call with tokens, latency and cost"
+      },
+      {
+        "type": "docs",
+        "scope": "budget",
+        "text": "stop, downgrade or ask at a cost, step or time limit"
+      },
+      {
+        "type": "docs",
+        "scope": "replay",
+        "text": "read any run back step by step from its trace"
+      }
+    ],
+    "writeup": ["overview", "architecture", "technical", "build", "product"]
+  },
+  {
+    "id": "voice-desk",
+    "name": "Voice Desk",
+    "tagline": "design for an interruptible voice support agent",
+    "status": "design",
+    "summary": "A voice support agent: speech in, tool calls, speech out, and it stops talking the moment the caller interrupts.",
+    "stack": ["Python", "FastAPI", "WebSockets", "Silero VAD", "faster-whisper", "Piper"],
+    "repo": null,
+    "highlights": [
+      {
+        "type": "docs",
+        "scope": "stream",
+        "text": "streaming speech-to-text, agent and text-to-speech"
+      },
+      {
+        "type": "docs",
+        "scope": "barge",
+        "text": "the caller can interrupt mid-sentence, and the agent remembers only what was heard"
+      },
+      {
+        "type": "docs",
+        "scope": "latency",
+        "text": "a time budget for each stage, measured and published"
+      }
+    ],
+    "writeup": ["overview", "architecture", "technical", "build", "product"]
+  },
+  {
+    "id": "browser-agent",
+    "name": "Browser Agent",
+    "tagline": "design for a browser fallback when an API fails",
+    "status": "design",
+    "summary": "An agent that finishes a task in a real browser when there is no API, or when the API fails, and reports success only after a separate check has seen evidence.",
+    "stack": ["Python", "Playwright", "FastAPI", "SQLite"],
+    "repo": null,
+    "highlights": [
+      {
+        "type": "docs",
+        "scope": "route",
+        "text": "try the API first, fall back to the browser on error"
+      },
+      {
+        "type": "docs",
+        "scope": "act",
+        "text": "drive a headless browser from page structure, not screenshots alone"
+      },
+      {
+        "type": "docs",
+        "scope": "check",
+        "text": "completion judged by evidence, never by the agent itself"
+      }
+    ],
+    "writeup": ["overview", "architecture", "technical", "build", "product"]
+  },
+  {
+    "id": "cited-answers",
+    "name": "Cited Answers",
+    "tagline": "design for document answers with measured retrieval",
+    "status": "design",
+    "summary": "Question answering over documents where every sentence carries a verified quote, and retrieval and faithfulness are scored on every change.",
+    "stack": ["Python", "PostgreSQL", "pgvector", "FastAPI", "Ragas", "GitHub Actions"],
+    "repo": null,
+    "highlights": [
+      {
+        "type": "docs",
+        "scope": "index",
+        "text": "heading-aware splitting and hybrid search in PostgreSQL"
+      },
+      {
+        "type": "docs",
+        "scope": "answer",
+        "text": "answers whose quotes are checked against the passage in code"
+      },
+      {
+        "type": "docs",
+        "scope": "score",
+        "text": "recall, faithfulness and refusals gated in CI"
+      }
+    ],
+    "writeup": ["overview", "architecture", "technical", "build", "product"]
+  }
+]

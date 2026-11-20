@@ -1,0 +1,56 @@
+/* For people who ask for less motion: everything is in place at once. */
+
+@media (prefers-reduced-motion: reduce) {
+  #track,
+  #git-graph,
+  #overlay,
+  #gg-full,
+  .gp,
+  .gn,
+  .gg-row,
+  #gg-tip,
+  .gg-hot {
+    transition: none !important;
+  }
+  .gg-halo {
+    animation: none !important;
+  }
+  #scroll-hint svg,
+  .floating .asm,
+  .md .sk,
+  .avail i::after {
+    animation: none !important;
+  }
+  .sk-run {
+    animation: none !important;
+    flex-wrap: wrap;
+    width: auto;
+  }
+  .sk-run [aria-hidden] {
+    display: none;
+  }
+  .exp-card,
+  .exp-list li,
+  .asm,
+  .hero-late {
+    transition: none !important;
+  }
+  #all-view,
+  .all-row,
+  .all-row i {
+    transition: none !important;
+  }
+  .exp-commit::after,
+  .exp-commit b,
+  .arch .an,
+  .arch .ae,
+  .arch .al {
+    animation: none !important;
+  }
+  .dome-scene,
+  #reader,
+  [data-key='contact'] .section-inner > *,
+  #release-list button {
+    transition: none !important;
+  }
+}

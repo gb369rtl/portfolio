@@ -1,0 +1,333 @@
+/* Experience: the jobs as commits; a hand drags the one you click onto the page. */
+
+.exp {
+  position: relative;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(calc(240 * var(--u)), calc(320 * var(--u)));
+  gap: clamp(calc(24 * var(--u)), min(4vw, calc(61.44 * var(--u))), calc(70 * var(--u)));
+  align-items: start;
+}
+/* every job is laid out in the same cell, so the section is always as tall as its longest job and never jumps */
+#exp-detail {
+  position: relative;
+  display: grid;
+}
+.exp-card {
+  grid-area: 1 / 1;
+  visibility: hidden;
+  clip-path: inset(0 100% 0 0);
+  transition:
+    clip-path 0.3s ease,
+    visibility 0s linear 0.3s;
+}
+.exp-card.shown {
+  visibility: visible;
+  clip-path: inset(0 0 0 0);
+  transition:
+    clip-path 0.6s var(--ease-out),
+    visibility 0s;
+}
+.exp-dates {
+  font-size: calc(14.5 * var(--u));
+  color: var(--text-faint);
+}
+.exp-card h3 {
+  font-size: clamp(calc(46 * var(--u)), min(5.4vw, calc(82.94 * var(--u))), calc(84 * var(--u)));
+  line-height: 0.86;
+  margin: calc(4 * var(--u)) 0 calc(10 * var(--u));
+}
+.exp-role {
+  display: inline-block;
+  font-size: calc(17 * var(--u));
+  font-weight: 650;
+  margin-bottom: calc(16 * var(--u));
+  padding: 0 calc(4 * var(--u));
+  margin-left: calc(-4 * var(--u));
+  background: linear-gradient(var(--mark), var(--mark)) no-repeat 0 82% / 100% 46%;
+}
+.exp-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  border-top: calc(2 * var(--u)) solid var(--text);
+  max-width: 66ch;
+}
+.exp-list li {
+  display: grid;
+  grid-template-columns: calc(92 * var(--u)) minmax(0, 1fr);
+  gap: calc(14 * var(--u));
+  padding: calc(6 * var(--u)) 0;
+  border-bottom: 1px solid var(--rule);
+  font-size: calc(15.5 * var(--u));
+  line-height: 1.42;
+  color: var(--text-dim);
+  opacity: 0;
+  transform: translateX(calc(-14 * var(--u)));
+}
+.exp-card.shown li {
+  opacity: 1;
+  transform: none;
+  transition:
+    opacity 0.35s ease,
+    transform 0.5s var(--ease-out);
+  transition-delay: calc(var(--j) * 70ms + 220ms);
+}
+.exp-list .scope {
+  font-family: var(--font-mono);
+  font-size: max(11px, calc(12 * var(--u)));
+  font-weight: 700;
+  color: var(--accent);
+  padding-top: calc(3 * var(--u));
+}
+.exp-rail {
+  position: relative;
+  padding-left: calc(30 * var(--u));
+  margin-top: calc(10 * var(--u));
+}
+.exp-rail::before {
+  content: '';
+  position: absolute;
+  left: calc(9 * var(--u));
+  top: calc(16 * var(--u));
+  bottom: calc(58 * var(--u));
+  width: calc(2.5 * var(--u));
+  background: var(--lane-exp);
+}
+.exp-commit {
+  position: relative;
+  display: block;
+  width: 100%;
+  text-align: left;
+  background: none;
+  border: 0;
+  padding: calc(6 * var(--u)) calc(6 * var(--u)) calc(20 * var(--u)) 0;
+  cursor: grab;
+  font: inherit;
+  color: inherit;
+  transition: opacity 0.2s ease;
+}
+.exp-commit::before {
+  content: '';
+  position: absolute;
+  left: calc(-28 * var(--u));
+  top: calc(9 * var(--u));
+  width: calc(13 * var(--u));
+  height: calc(13 * var(--u));
+  border-radius: 50%;
+  background: var(--bg);
+  border: calc(2.5 * var(--u)) solid var(--lane-exp);
+  transition:
+    background 0.2s ease,
+    transform 0.2s ease;
+}
+.exp-commit b {
+  display: block;
+  font-family: var(--font-display);
+  font-stretch: 68%;
+  font-weight: 800;
+  font-size: calc(25 * var(--u));
+  line-height: 1;
+}
+.exp-commit b span {
+  padding: 0 calc(4 * var(--u));
+  margin-left: calc(-4 * var(--u));
+  background: linear-gradient(var(--mark), var(--mark)) no-repeat 0 82% / 0% 46%;
+  transition: background-size 0.4s var(--ease-out);
+}
+.exp-commit small {
+  display: block;
+  font-size: max(11px, calc(13.5 * var(--u)));
+  line-height: 1.35;
+  color: var(--text-dim);
+  margin-top: calc(4 * var(--u));
+}
+.exp-commit small + small {
+  color: var(--text-faint);
+  margin-top: 0;
+}
+.exp-commit.active::before {
+  background: var(--lane-exp);
+}
+.exp-commit.active b span {
+  background-size: 100% 46%;
+}
+.exp-commit.lifted {
+  opacity: 0.25;
+}
+.exp-commit::after {
+  content: '';
+  position: absolute;
+  left: calc(-28 * var(--u));
+  top: calc(9 * var(--u));
+  width: calc(13 * var(--u));
+  height: calc(13 * var(--u));
+  border-radius: 50%;
+  border: calc(2 * var(--u)) solid var(--lane-exp);
+  opacity: 0;
+  pointer-events: none;
+}
+/* once the hand has shown how it works, the commits nobody has opened yet keep asking to be clicked */
+.exp-rail.invite .exp-commit:not(.seen)::after {
+  animation: exp-ping 1.9s ease-out infinite;
+  animation-delay: calc(var(--n) * 0.32s);
+}
+.exp-rail.invite .exp-commit:not(.seen) b {
+  animation: exp-nudge 1.9s var(--ease-out) infinite;
+  animation-delay: calc(var(--n) * 0.32s);
+}
+@keyframes exp-ping {
+  0% {
+    transform: scale(1);
+    opacity: 0.9;
+  }
+  70%,
+  100% {
+    transform: scale(2.7);
+    opacity: 0;
+  }
+}
+@keyframes exp-nudge {
+  0%,
+  55%,
+  100% {
+    translate: 0 0;
+  }
+  18% {
+    translate: calc(8 * var(--u)) 0;
+  }
+}
+.exp-commit.pressed b {
+  scale: 0.94;
+}
+.exp-press {
+  position: fixed;
+  left: 0;
+  top: 0;
+  z-index: 40;
+  width: calc(44 * var(--u));
+  height: calc(44 * var(--u));
+  margin: calc(-22 * var(--u)) 0 0 calc(-22 * var(--u));
+  border-radius: 50%;
+  border: calc(2.5 * var(--u)) solid var(--accent);
+  pointer-events: none;
+}
+#grab-hand svg {
+  transition: transform 0.1s ease;
+}
+#grab-hand.press svg {
+  transform: scale(0.84);
+}
+.exp-hint {
+  margin: calc(2 * var(--u)) 0 0;
+  font-size: max(11px, calc(13.5 * var(--u)));
+  color: var(--text-faint);
+}
+.exp-ghost {
+  position: fixed;
+  left: 0;
+  top: 0;
+  z-index: 40;
+  pointer-events: none;
+  transform-origin: left top;
+  background: var(--mark);
+  color: var(--text);
+  padding: calc(6 * var(--u)) calc(10 * var(--u));
+  white-space: nowrap;
+  font-family: var(--font-display);
+  font-stretch: 68%;
+  font-weight: 800;
+  font-size: calc(25 * var(--u));
+  line-height: 1;
+  box-shadow: 0 calc(16 * var(--u)) calc(26 * var(--u)) calc(-14 * var(--u)) rgba(16, 35, 28, 0.6);
+}
+#grab-hand {
+  position: fixed;
+  left: 0;
+  top: 0;
+  z-index: 41;
+  width: calc(46 * var(--u));
+  height: calc(46 * var(--u));
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.2s ease;
+  will-change: transform;
+}
+#grab-hand.on {
+  opacity: 1;
+}
+#grab-hand .f {
+  transform-box: fill-box;
+  transform-origin: 50% 100%;
+  transition: transform 0.14s ease;
+}
+#grab-hand.closed .f {
+  transform: translateY(calc(7 * var(--u))) scaleY(0.55);
+}
+#grab-hand.closed .t {
+  transform: translate(calc(3 * var(--u)), calc(3 * var(--u)));
+}
+#grab-hand .t {
+  transition: transform 0.14s ease;
+}
+
+.exp-commit b {
+  transform-origin: left center;
+  transition: scale 0.16s var(--ease-out);
+}
+.exp-commit:active b {
+  scale: 0.97;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .exp-commit:hover::before {
+    transform: scale(1.35);
+  }
+}
+
+@media (max-width: 900px), (orientation: portrait) {
+  /* the list of jobs moves above the page as a row, so every job is one tap away and the page gets the full width */
+  .exp {
+    display: flex;
+    flex-direction: column;
+    gap: calc(10 * var(--u));
+  }
+  .exp-main {
+    display: contents;
+  } /* so the heading, the row of jobs and the page can be ordered */
+  .exp h2 {
+    order: -2;
+    margin-bottom: 0;
+  }
+  .exp-rail {
+    order: -1;
+    display: flex;
+    flex-wrap: wrap;
+    gap: calc(4 * var(--u)) calc(24 * var(--u));
+    padding-left: 0;
+    padding-right: 48px; /* clear of the commit-list button in the corner */
+    margin-top: 0;
+  }
+  .exp-rail::before {
+    display: none;
+  }
+  .exp-commit {
+    width: auto;
+    padding: calc(5 * var(--u)) 0 calc(5 * var(--u)) calc(20 * var(--u));
+  }
+  .exp-commit::before,
+  .exp-commit::after {
+    left: 0;
+    top: calc(8 * var(--u));
+  }
+  .exp-commit b {
+    font-size: calc(20 * var(--u));
+  }
+  .exp-commit small,
+  .exp-hint {
+    display: none;
+  }
+  .exp-list li {
+    grid-template-columns: calc(72 * var(--u)) minmax(0, 1fr);
+    gap: calc(10 * var(--u));
+  }
+}

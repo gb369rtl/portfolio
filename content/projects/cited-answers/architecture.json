@@ -1,0 +1,99 @@
+{
+  "note": "The top row is the index and the scoring. The bottom row is one question. The same path that answers a person is the one the question set measures.",
+  "details": "architecture.md",
+  "nodes": [
+    {
+      "id": "docs",
+      "label": "Documents",
+      "col": 0,
+      "row": 0,
+      "kind": "storage"
+    },
+    {
+      "id": "ingest",
+      "label": "Split and embed",
+      "col": 1,
+      "row": 0
+    },
+    {
+      "id": "store",
+      "label": "Postgres, pgvector",
+      "col": 2,
+      "row": 0,
+      "kind": "storage"
+    },
+    {
+      "id": "q",
+      "label": "Question",
+      "col": 0,
+      "row": 1,
+      "kind": "person"
+    },
+    {
+      "id": "ret",
+      "label": "Hybrid search, then re-rank",
+      "col": 2,
+      "row": 1
+    },
+    {
+      "id": "ans",
+      "label": "Answer with quotes",
+      "col": 3,
+      "row": 1
+    },
+    {
+      "id": "set",
+      "label": "Question set",
+      "col": 3,
+      "row": 0,
+      "kind": "storage"
+    },
+    {
+      "id": "score",
+      "label": "Faithfulness, recall",
+      "col": 4,
+      "row": 0
+    },
+    {
+      "id": "ci",
+      "label": "CI check",
+      "col": 5,
+      "row": 0
+    }
+  ],
+  "edges": [
+    {
+      "from": "docs",
+      "to": "ingest"
+    },
+    {
+      "from": "ingest",
+      "to": "store"
+    },
+    {
+      "from": "q",
+      "to": "ret"
+    },
+    {
+      "from": "store",
+      "to": "ret",
+      "label": "passages"
+    },
+    {
+      "from": "ret",
+      "to": "ans"
+    },
+    {
+      "from": "set",
+      "to": "score"
+    },
+    {
+      "from": "ans",
+      "to": "score"
+    },
+    {
+      "from": "score",
+      "to": "ci"
+    }
+  ]
+}

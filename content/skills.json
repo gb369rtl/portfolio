@@ -1,0 +1,102 @@
+[
+  {
+    "id": "ai",
+    "name": "Agents and AI",
+    "items": [
+      "LLM agent pipelines",
+      "Tool calling and MCP servers",
+      "LangGraph",
+      "Human-in-the-loop review",
+      "Evals and golden replay",
+      "Structured output with Pydantic and Zod",
+      "Langfuse tracing",
+      "Local models on llama.cpp",
+      "OpenAI, Azure OpenAI and Anthropic SDKs",
+      "Vision LLMs",
+      "YOLO",
+      "PaddleOCR",
+      "Embeddings search",
+      "Whisper speech"
+    ],
+    "highlight": [
+      "LLM agent pipelines",
+      "Tool calling and MCP servers",
+      "Human-in-the-loop review",
+      "Evals and golden replay"
+    ]
+  },
+  {
+    "id": "backend",
+    "name": "Backend",
+    "items": [
+      "FastAPI",
+      "NestJS",
+      "Express",
+      "asyncio",
+      "WebSockets",
+      "Server-sent events",
+      "OAuth2",
+      "JWT and RBAC",
+      "Razorpay"
+    ],
+    "highlight": ["FastAPI", "NestJS", "Express"]
+  },
+  {
+    "id": "frontend",
+    "name": "Frontend",
+    "items": [
+      "React 19",
+      "Next.js",
+      "Tailwind",
+      "TanStack Query",
+      "Vite",
+      "Zustand",
+      "Redux Toolkit",
+      "React Hook Form",
+      "shadcn/ui",
+      "ECharts",
+      "Flutter"
+    ],
+    "highlight": ["React 19", "Tailwind", "TanStack Query"]
+  },
+  {
+    "id": "data",
+    "name": "Data",
+    "items": [
+      "PostgreSQL",
+      "Redis Streams",
+      "MySQL",
+      "MongoDB",
+      "S3 and MinIO",
+      "Prisma",
+      "SQLAlchemy",
+      "dbt",
+      "Airbyte",
+      "Superset",
+      "Kafka"
+    ],
+    "highlight": ["PostgreSQL", "Redis Streams", "MySQL"]
+  },
+  {
+    "id": "infra",
+    "name": "Cloud and DevOps",
+    "items": [
+      "Docker",
+      "GitHub Actions",
+      "AWS",
+      "nginx",
+      "Podman",
+      "Drone CI",
+      "SLURM GPU clusters",
+      "Keycloak",
+      "Cloudflare"
+    ],
+    "highlight": ["Docker", "GitHub Actions", "AWS"]
+  },
+  {
+    "id": "quality",
+    "name": "Testing",
+    "items": ["pytest", "Jest", "Playwright", "Vitest", "mypy --strict", "Mutation testing", "Nx", "pnpm workspaces"],
+    "highlight": ["pytest", "Jest"]
+  }
+]

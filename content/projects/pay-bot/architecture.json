@@ -1,0 +1,97 @@
+{
+  "note": "The model sits to one side: it reads an answer and phrases a question. Whether a value is valid, and whether the form is complete, is decided by the rule engine.",
+  "nodes": [
+    {
+      "id": "user",
+      "label": "User",
+      "col": 0,
+      "row": 0,
+      "kind": "person"
+    },
+    {
+      "id": "chat",
+      "label": "Chat page",
+      "col": 1,
+      "row": 0
+    },
+    {
+      "id": "voice",
+      "label": "Speech service",
+      "col": 1,
+      "row": 1
+    },
+    {
+      "id": "conv",
+      "label": "Conversation service",
+      "col": 2,
+      "row": 0
+    },
+    {
+      "id": "model",
+      "label": "Local model, llama.cpp",
+      "col": 2,
+      "row": 1
+    },
+    {
+      "id": "rules",
+      "label": "Rule engine",
+      "col": 3,
+      "row": 0
+    },
+    {
+      "id": "form",
+      "label": "Completed form",
+      "col": 4,
+      "row": 0,
+      "kind": "storage"
+    },
+    {
+      "id": "ok",
+      "label": "Approver",
+      "col": 5,
+      "row": 0,
+      "kind": "person"
+    }
+  ],
+  "edges": [
+    {
+      "from": "user",
+      "to": "chat",
+      "label": "text"
+    },
+    {
+      "from": "user",
+      "to": "voice",
+      "label": "speech"
+    },
+    {
+      "from": "voice",
+      "to": "chat",
+      "label": "transcript"
+    },
+    {
+      "from": "chat",
+      "to": "conv"
+    },
+    {
+      "from": "conv",
+      "to": "model",
+      "label": "read, phrase"
+    },
+    {
+      "from": "conv",
+      "to": "rules",
+      "label": "proposed values"
+    },
+    {
+      "from": "rules",
+      "to": "form",
+      "label": "valid"
+    },
+    {
+      "from": "form",
+      "to": "ok",
+      "label": "submitted by the user"
+    }
+  ]
+}

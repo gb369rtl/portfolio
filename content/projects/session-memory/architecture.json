@@ -1,0 +1,98 @@
+{
+  "note": "Hooks capture each turn and file it by project. A small model adds tags and a summary. The vault feeds both the search and the briefing that opens the next session.",
+  "nodes": [
+    {
+      "id": "sess",
+      "label": "Agent session",
+      "col": 0,
+      "row": 0
+    },
+    {
+      "id": "hooks",
+      "label": "Session hooks, start / stop / compact",
+      "col": 1,
+      "row": 0
+    },
+    {
+      "id": "route",
+      "label": "Project router",
+      "col": 2,
+      "row": 0
+    },
+    {
+      "id": "llm",
+      "label": "Small model, tags and summary",
+      "col": 2,
+      "row": 1
+    },
+    {
+      "id": "vault",
+      "label": "Notes vault, Markdown",
+      "col": 3,
+      "row": 0,
+      "kind": "storage"
+    },
+    {
+      "id": "index",
+      "label": "Vector index, upstream tool",
+      "col": 3,
+      "row": 1,
+      "kind": "storage"
+    },
+    {
+      "id": "search",
+      "label": "Command-line search",
+      "col": 4,
+      "row": 0
+    },
+    {
+      "id": "me",
+      "label": "Developer",
+      "col": 5,
+      "row": 0,
+      "kind": "person"
+    }
+  ],
+  "edges": [
+    {
+      "from": "sess",
+      "to": "hooks"
+    },
+    {
+      "from": "hooks",
+      "to": "route",
+      "label": "turn"
+    },
+    {
+      "from": "route",
+      "to": "vault",
+      "label": "file under project"
+    },
+    {
+      "from": "hooks",
+      "to": "llm"
+    },
+    {
+      "from": "llm",
+      "to": "vault",
+      "label": "tags, summary"
+    },
+    {
+      "from": "vault",
+      "to": "index"
+    },
+    {
+      "from": "vault",
+      "to": "search"
+    },
+    {
+      "from": "search",
+      "to": "me"
+    },
+    {
+      "from": "vault",
+      "to": "sess",
+      "label": "briefing at start"
+    }
+  ]
+}

@@ -1,0 +1,105 @@
+{
+  "note": "Mail comes in on the left. The agent can only read, through the tool server. The single write, on the right, happens after a person approves.",
+  "nodes": [
+    {
+      "id": "mail",
+      "label": "Gmail / Outlook / IMAP",
+      "col": 0,
+      "row": 0
+    },
+    {
+      "id": "ingest",
+      "label": "Mail service",
+      "col": 1,
+      "row": 0
+    },
+    {
+      "id": "store",
+      "label": "Encrypted storage",
+      "col": 1,
+      "row": 1,
+      "kind": "storage"
+    },
+    {
+      "id": "bus",
+      "label": "Redis Streams",
+      "col": 2,
+      "row": 0
+    },
+    {
+      "id": "agent",
+      "label": "Agent pipeline, 8 phases",
+      "col": 3,
+      "row": 0
+    },
+    {
+      "id": "mcp",
+      "label": "43 MCP tools, read-only",
+      "col": 3,
+      "row": 1
+    },
+    {
+      "id": "db",
+      "label": "Approval records",
+      "col": 4,
+      "row": 1,
+      "kind": "storage"
+    },
+    {
+      "id": "review",
+      "label": "Review desk",
+      "col": 4,
+      "row": 0,
+      "kind": "person"
+    },
+    {
+      "id": "commit",
+      "label": "Commit handler",
+      "col": 5,
+      "row": 0
+    }
+  ],
+  "edges": [
+    {
+      "from": "mail",
+      "to": "ingest"
+    },
+    {
+      "from": "ingest",
+      "to": "store"
+    },
+    {
+      "from": "ingest",
+      "to": "bus",
+      "label": "event"
+    },
+    {
+      "from": "bus",
+      "to": "agent"
+    },
+    {
+      "from": "agent",
+      "to": "mcp",
+      "label": "look up"
+    },
+    {
+      "from": "mcp",
+      "to": "db"
+    },
+    {
+      "from": "agent",
+      "to": "review",
+      "label": "proposal"
+    },
+    {
+      "from": "review",
+      "to": "commit",
+      "label": "approved"
+    },
+    {
+      "from": "commit",
+      "to": "db",
+      "label": "one write"
+    }
+  ]
+}

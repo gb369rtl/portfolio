@@ -1,0 +1,90 @@
+{
+  "note": "Recordings feed the replay. The same steps pass; a changed sequence stops the merge and shows the author what moved.",
+  "details": "architecture.md",
+  "nodes": [
+    {
+      "id": "pr",
+      "label": "Pull request",
+      "col": 0,
+      "row": 0
+    },
+    {
+      "id": "ci",
+      "label": "GitHub Action",
+      "col": 1,
+      "row": 0
+    },
+    {
+      "id": "rec",
+      "label": "Approved recordings",
+      "col": 1,
+      "row": 1,
+      "kind": "storage"
+    },
+    {
+      "id": "run",
+      "label": "Replay on new build",
+      "col": 2,
+      "row": 0
+    },
+    {
+      "id": "cmp",
+      "label": "Compare tool calls",
+      "col": 3,
+      "row": 0
+    },
+    {
+      "id": "ok",
+      "label": "Check passes",
+      "col": 4,
+      "row": 0
+    },
+    {
+      "id": "bad",
+      "label": "Check fails, with diff",
+      "col": 4,
+      "row": 1
+    },
+    {
+      "id": "dev",
+      "label": "Author",
+      "col": 5,
+      "row": 1,
+      "kind": "person"
+    }
+  ],
+  "edges": [
+    {
+      "from": "pr",
+      "to": "ci"
+    },
+    {
+      "from": "ci",
+      "to": "run"
+    },
+    {
+      "from": "rec",
+      "to": "run",
+      "label": "inputs + results"
+    },
+    {
+      "from": "run",
+      "to": "cmp",
+      "label": "new sequence"
+    },
+    {
+      "from": "cmp",
+      "to": "ok",
+      "label": "same"
+    },
+    {
+      "from": "cmp",
+      "to": "bad",
+      "label": "drift"
+    },
+    {
+      "from": "bad",
+      "to": "dev"
+    }
+  ]
+}

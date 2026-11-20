@@ -1,0 +1,106 @@
+{
+  "note": "One question fans out to parallel searchers, everything they read is stored, and the writer can only use what is in the store. The checker sends unsupported claims back to the writer.",
+  "details": "architecture.md",
+  "nodes": [
+    {
+      "id": "q",
+      "label": "Question",
+      "col": 0,
+      "row": 1,
+      "kind": "person"
+    },
+    {
+      "id": "plan",
+      "label": "Supervisor, planner",
+      "col": 1,
+      "row": 1
+    },
+    {
+      "id": "s1",
+      "label": "Searcher A",
+      "col": 2,
+      "row": 0
+    },
+    {
+      "id": "s2",
+      "label": "Searcher B",
+      "col": 2,
+      "row": 1
+    },
+    {
+      "id": "s3",
+      "label": "Searcher C",
+      "col": 2,
+      "row": 2
+    },
+    {
+      "id": "store",
+      "label": "Fetched pages",
+      "col": 3,
+      "row": 1,
+      "kind": "storage"
+    },
+    {
+      "id": "write",
+      "label": "Writer",
+      "col": 4,
+      "row": 1
+    },
+    {
+      "id": "check",
+      "label": "Citation checker",
+      "col": 4,
+      "row": 0
+    },
+    {
+      "id": "out",
+      "label": "Report with sources",
+      "col": 5,
+      "row": 1
+    }
+  ],
+  "edges": [
+    {
+      "from": "q",
+      "to": "plan"
+    },
+    {
+      "from": "plan",
+      "to": "s1"
+    },
+    {
+      "from": "plan",
+      "to": "s2"
+    },
+    {
+      "from": "plan",
+      "to": "s3"
+    },
+    {
+      "from": "s1",
+      "to": "store"
+    },
+    {
+      "from": "s2",
+      "to": "store"
+    },
+    {
+      "from": "s3",
+      "to": "store"
+    },
+    {
+      "from": "store",
+      "to": "write",
+      "label": "passages"
+    },
+    {
+      "from": "write",
+      "to": "check",
+      "label": "claims"
+    },
+    {
+      "from": "write",
+      "to": "out"
+    }
+  ]
+}
