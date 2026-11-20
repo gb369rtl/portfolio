@@ -468,23 +468,24 @@ function dragEnd() {
     unpick(); // any other click puts the book back
   else if (tileEl) pick(+tileEl.dataset.project, tileEl);
 }
-scene.addEventListener('mousedown', (event) => {
-  dragStart(event.pageX, event.pageY, event.target);
-  event.preventDefault();
+// Pointer events, so one press is one event whatever made it. With separate mouse and touch listeners a tap
+// arrived twice (the touch, then the mouse events a browser sends after it), which pulled a book out and opened
+// it in the same tap.
+scene.addEventListener('pointerdown', (event) => {
+  if (!event.isPrimary || (event.pointerType === 'mouse' && event.button !== 0)) return;
+  dragStart(event.pageX, event.pageY, event.target, event.pointerType !== 'mouse');
+  if (event.pointerType === 'mouse') event.preventDefault(); // no text selection while dragging
 });
-window.addEventListener('mousemove', (event) => dragMove(event.pageX, event.pageY));
-window.addEventListener('mouseup', dragEnd);
-scene.addEventListener(
-  'touchstart',
-  (event) => dragStart(event.touches[0].pageX, event.touches[0].pageY, event.target, true),
-  {
-    passive: true,
-  },
-);
-scene.addEventListener('touchmove', (event) => dragMove(event.touches[0].pageX, event.touches[0].pageY), {
-  passive: true,
+window.addEventListener('pointermove', (event) => {
+  if (event.isPrimary) dragMove(event.pageX, event.pageY);
 });
-scene.addEventListener('touchend', dragEnd);
+window.addEventListener('pointerup', (event) => {
+  if (event.isPrimary) dragEnd();
+});
+window.addEventListener('pointercancel', () => {
+  travelled = CLICK_SLOP; // the browser took the gesture: it is not a click
+  dragEnd();
+});
 
 // ----- what the rest of the page may ask -----
 
