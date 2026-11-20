@@ -16,7 +16,7 @@
   transition: opacity 0.3s ease;
 }
 #graph-wrap.full #git-graph,
-#app:has(.orbit.reading) #git-graph {
+#app.reading #git-graph {
   opacity: 0;
 }
 .gg-svg {
@@ -79,7 +79,7 @@
   cursor: pointer;
 }
 #graph-wrap.elevated #git-graph .gh,
-#app:has(.orbit.reading) #git-graph .gh {
+#app.reading #git-graph .gh {
   pointer-events: none;
 }
 #git-graph .gg-hot,
@@ -222,6 +222,7 @@
   padding: 0 calc(8 * var(--u)) 0 calc(var(--gg-gw) + calc(6 * var(--u)));
   font-size: max(11px, calc(13.5 * var(--u)));
   white-space: nowrap;
+  border-bottom: 1px solid rgba(201, 208, 200, 0.55); /* for browsers without color-mix() */
   border-bottom: 1px solid color-mix(in srgb, var(--rule) 55%, transparent);
   opacity: 0;
   transition:
@@ -232,6 +233,7 @@
   opacity: 1;
 }
 .gg-row.head {
+  background: rgba(243, 226, 75, 0.5);
   background: color-mix(in srgb, var(--mark) 50%, transparent);
 }
 .gg-ref {
@@ -317,8 +319,8 @@
   height: calc(16 * var(--u));
   fill: currentColor;
 }
-#app:has(#graph-wrap.elevated:not(.menu)) #log-open,
-#app:has(.orbit.reading) #log-open {
+#graph-wrap.elevated:not(.menu) ~ #log-open,
+#app.reading #log-open {
   opacity: 0;
   pointer-events: none;
 }
@@ -335,6 +337,7 @@
 
 @media (hover: hover) and (pointer: fine) {
   #graph-wrap.menu .gg-row.on:hover {
+    background: rgba(243, 226, 75, 0.32);
     background: color-mix(in srgb, var(--mark) 32%, transparent);
   }
   #log-open:hover {

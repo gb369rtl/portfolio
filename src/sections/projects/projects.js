@@ -5,7 +5,7 @@
 // "View all projects" blasts the sphere aside and opens a list of every project next to it.
 
 import { loadWriteup, profile, projects } from '../../core/content.js';
-import { byId } from '../../core/dom.js';
+import { app, byId } from '../../core/dom.js';
 import { reduceMotion } from '../../core/env.js';
 import { isStacked, unitOf } from '../../core/scale.js';
 import { isOn, state } from '../../core/state.js';
@@ -206,6 +206,12 @@ function unpick() {
   if (isOn('projects')) setHeadSection(PROJECTS_SECTION);
 }
 
+// the page also needs to know a book is open: the tree and the commit-list button step out of the way
+function setReading(on) {
+  orbit.classList.toggle('reading', on);
+  app.classList.toggle('reading', on);
+}
+
 // where the reader starts from and returns to: the box of the book on the sphere
 function bookBox() {
   const book = (selectedTile ? selectedTile.el : orbit).getBoundingClientRect();
@@ -238,7 +244,7 @@ function read() {
     readerEl.style.opacity = '1';
     settleTimer = setTimeout(() => readerEl.classList.add('settled'), 560);
   }
-  orbit.classList.add('reading');
+  setReading(true);
   updateUi();
 }
 
@@ -260,7 +266,7 @@ function unread() {
     readerEl.style.transform = box;
     readerEl.style.opacity = '0';
   }
-  orbit.classList.remove('reading');
+  setReading(false);
   updateUi();
 }
 
@@ -478,7 +484,7 @@ export function closeBooks() {
     readerEl.style.transition = 'none';
     readerEl.style.opacity = '0';
     readerEl.classList.remove('settled');
-    orbit.classList.remove('reading');
+    setReading(false);
     mode = 'picked';
   }
   if (mode === 'picked') unpick();

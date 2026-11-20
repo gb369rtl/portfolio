@@ -43,6 +43,20 @@
   </head>
   <body>
     <div id="app">
+      <!-- the git history: a tree on the left edge, and the full-height table it opens into -->
+      <div id="graph-wrap" aria-hidden="true">
+        <svg id="git-graph" class="gg-svg"></svg>
+        <div id="gg-tip"></div>
+        <div id="gg-full" aria-label="Commit list">
+          <div class="gg-cols"><span>Graph</span><span>Description</span><span>When</span></div>
+          <div class="gg-body">
+            <div id="gg-rows"></div>
+            <svg id="gg-big" class="gg-svg" preserveAspectRatio="xMinYMin meet"></svg>
+          </div>
+        </div>
+      </div>
+
+      <!-- opens the commit table as a menu: the only way to it on a phone, and the keyboard's way everywhere -->
       <button type="button" id="log-open" aria-expanded="false" aria-controls="gg-full">
         <svg viewBox="0 0 32 32" aria-hidden="true">
           <path
@@ -58,19 +72,6 @@
         </svg>
         <span>Open the commit list</span>
       </button>
-
-      <!-- the git history: a tree on the left edge, and the full-height table it opens into -->
-      <div id="graph-wrap" aria-hidden="true">
-        <svg id="git-graph" class="gg-svg"></svg>
-        <div id="gg-tip"></div>
-        <div id="gg-full" aria-label="Commit list">
-          <div class="gg-cols"><span>Graph</span><span>Description</span><span>When</span></div>
-          <div class="gg-body">
-            <div id="gg-rows"></div>
-            <svg id="gg-big" class="gg-svg" preserveAspectRatio="xMinYMin meet"></svg>
-          </div>
-        </div>
-      </div>
 
       <!-- what covers the page while it changes section -->
       <div id="overlay" aria-hidden="true"></div>

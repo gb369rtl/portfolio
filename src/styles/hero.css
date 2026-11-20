@@ -276,6 +276,7 @@
   overflow: visible;
 }
 #hero-loader svg circle {
+  fill: rgba(16, 35, 28, 0.16);
   fill: color-mix(in srgb, var(--text) 16%, transparent);
   transition: fill 0.25s;
 }
