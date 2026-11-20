@@ -206,6 +206,9 @@
   opacity: 1;
   transform: scale(1.3);
 }
+.all-key {
+  display: none;
+}
 .all-note {
   margin: calc(12 * var(--u)) 0 0;
   font:
@@ -254,5 +257,88 @@
   }
   #all-back svg {
     transform: rotate(90deg);
+  }
+}
+
+@media (max-width: 599px) and (orientation: portrait) {
+  /* the sphere moves up and shrinks; the list is a two-column grid under it, every name a full-size tap target */
+  .in .orbit.all:not(.picked):not(.reading) .dome-scene {
+    transform: translateY(-26vh) scale(calc(var(--dome-s, 1) * 0.5));
+  }
+  #all-view {
+    left: 0;
+    right: 0;
+    top: auto;
+    bottom: calc(10 * var(--u));
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    column-gap: calc(14 * var(--u));
+    overflow: visible;
+  }
+  .all-head {
+    grid-column: 1 / -1;
+    align-items: center;
+    min-height: max(44px, calc(44 * var(--u)));
+    padding-bottom: calc(6 * var(--u));
+  }
+  .all-head h3 {
+    font-size: calc(30 * var(--u));
+  }
+  .all-row {
+    grid-template-columns: calc(11 * var(--u)) minmax(0, 1fr) auto;
+    gap: calc(8 * var(--u));
+    min-height: max(44px, calc(46 * var(--u)));
+    padding: 0;
+    font-size: calc(15 * var(--u));
+  }
+  .all-row.on,
+  .all-row:focus-visible {
+    padding-left: 0;
+  }
+  /* no room for the words "shipped" and "design" beside each name: a filled mark is shipped, an open one a design */
+  .all-row .num,
+  .all-row .st,
+  .all-note {
+    display: none;
+  }
+  .all-row[data-status='design'] i,
+  .all-key i.design {
+    background: none;
+    box-shadow: inset 0 0 0 2px var(--c, var(--text-faint));
+  }
+  .all-key {
+    grid-column: 1 / -1;
+    display: flex;
+    align-items: center;
+    gap: calc(7 * var(--u));
+    margin: calc(8 * var(--u)) 0 0;
+    font:
+      400 max(11px, calc(12.5 * var(--u))) / 1.4 'Inter',
+      var(--font-body);
+    color: var(--text-faint);
+  }
+  .all-key i {
+    width: calc(9 * var(--u));
+    height: calc(13 * var(--u));
+    background: var(--text-faint);
+  }
+  .all-key i.design {
+    margin-left: calc(10 * var(--u));
+  }
+  .all-row span:not(.num):not(.st) {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  #orbit-all {
+    top: calc(78 * var(--u));
+    right: 0;
+    min-height: max(44px, calc(44 * var(--u)));
+  }
+  #all-back {
+    top: 0;
+    right: 0;
+    width: max(44px, calc(44 * var(--u)));
+    height: max(44px, calc(44 * var(--u)));
   }
 }

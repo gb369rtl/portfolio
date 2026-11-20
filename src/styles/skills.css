@@ -64,7 +64,7 @@
   font-size: max(11px, calc(13.5 * var(--u)));
   color: var(--text-faint);
 }
-.sk-note span {
+.sk-note .key {
   background: var(--mark);
   color: var(--text);
   padding: 0 calc(4 * var(--u));
@@ -81,5 +81,27 @@
   .sk-row {
     grid-template-columns: 1fr;
     gap: calc(4 * var(--u));
+  }
+}
+
+/* a tap holds a tape still, and another lets it go */
+.sk-row.held .sk-run {
+  animation-play-state: paused;
+}
+@media (max-width: 599px) and (orientation: portrait) {
+  .sk-row {
+    padding: calc(7 * var(--u)) 0 calc(6 * var(--u));
+    gap: 1px;
+  }
+  .sk-row h3 {
+    font-size: calc(19 * var(--u));
+  }
+  .sk-run span {
+    font-size: calc(19 * var(--u));
+    line-height: 1.7;
+    margin-right: calc(26 * var(--u));
+  }
+  .sk-note {
+    margin-top: calc(10 * var(--u));
   }
 }

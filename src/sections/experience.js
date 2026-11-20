@@ -111,7 +111,9 @@ async function pull(index) {
   hand.classList.add('press');
   button.classList.add('pressed');
   const ring = floating('exp-press', u);
-  ring.style.transform = at(handX + 16 * u, handY + 8 * u);
+  // placed with `translate`, not `transform`: the ring animates `scale`, and a transform would be scaled with it,
+  // which made the ring slide in from the corner instead of growing where the hand pressed
+  ring.style.translate = `${(handX + 16 * u).toFixed(1)}px ${(handY + 8 * u).toFixed(1)}px`;
   ring
     .animate(
       [

@@ -52,3 +52,44 @@
     padding: 0 calc(20 * var(--u));
   }
 }
+
+@media (max-width: 599px) and (orientation: portrait) {
+  .section-inner {
+    max-height: calc(100 * var(--vh));
+    padding: calc(12 * var(--u)) 0 calc(14 * var(--u));
+  }
+}
+
+/* A phone on its side is too short for any section. The page says so instead of drawing itself too small to read.
+   Real pixels here: the page's unit is tiny at this size. */
+#rotate-note {
+  display: none;
+}
+@media (orientation: landscape) and (max-height: 450px) and (max-width: 960px) {
+  #rotate-note {
+    position: fixed;
+    inset: 0;
+    z-index: 30;
+    display: grid;
+    place-content: center;
+    justify-items: center;
+    gap: 8px;
+    padding: 24px;
+    background: var(--bg);
+    text-align: center;
+  }
+  #rotate-note svg {
+    width: 46px;
+    height: 46px;
+    margin-bottom: 4px;
+  }
+  #rotate-note b {
+    font: 800 30px/1 var(--font-display);
+    font-stretch: 62%;
+  }
+  #rotate-note p {
+    margin: 0;
+    font-size: 15px;
+    color: var(--text-dim);
+  }
+}

@@ -85,7 +85,7 @@ More detail, including how modules depend on each other, is in [`docs/architectu
 Every section fits the screen, on a tablet, a laptop or a 32-inch monitor, so a visitor never scrolls inside a section and then again to leave it. Three things make that hold:
 
 1. **One unit.** The page is drawn for a window 695 units tall, and every length in the stylesheets is a multiple of `--u`, one design pixel. `tokens.css` sets `--u` from the window: as large as the height allows, as long as the width keeps the 1180 units the layout needs. The drawing therefore grows and shrinks as a whole, with no jump at any width.
-2. **Two layouts.** Landscape screens get the side-by-side layout with the git tree on the left. Portrait screens and narrow windows get a stacked layout, with the tree behind a menu button.
+2. **Two layouts, three sizes.** Landscape screens get the side-by-side layout with the git tree on the left. Portrait screens and narrow windows get a stacked layout, with the tree behind a menu button. Phones use the stacked layout at their own sizes: always 390 units wide, with tap targets of at least 44px, and each section set to fit phones from 553px tall upward.
 3. **A safety net.** After layout, `scale.js` measures each section. If one is still taller than the screen, that section's own `--u` is lowered until it fits.
 
 The one place that scrolls is the inside of a project's book, which is a document.
@@ -112,6 +112,10 @@ It is a static site. `npm run build` writes `dist/`; put that folder on any stat
 ## Browser support
 
 Current Chrome, Edge, Firefox and Safari (Safari 15.4 or newer). The page uses ES modules with top-level `await`, WebGL, the Web Animations API and CSS `min()`/`clamp()`. Without WebGL the hero shows the photograph and the words, still. With "reduce motion" set, everything is in place at once and section changes are instant.
+
+## Touch
+
+On a touch screen a swipe up goes to the next section and a swipe down to the one before; the hint on the first screen is also a button. Dragging the sphere sideways turns it, while a vertical swipe on it still changes section. Wording follows the input ("tap" and "swipe" for a finger, "click" and "scroll" for a pointer), decided by media queries, never by screen width. A phone held on its side is too short for any section, so the page asks for it to be turned upright.
 
 ## Keyboard
 

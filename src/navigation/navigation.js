@@ -1,5 +1,6 @@
 // Moving between sections. The page does not scroll: one section fills the screen and the wheel, a swipe or
-// the arrow keys change it. Scrolling up moves forward, the way a git log reads newest-first.
+// the arrow keys change it. With a wheel, scrolling up moves forward, the way a git log reads newest-first.
+// With a finger, swiping up does.
 
 import { checkout, firstVisit } from '../ceremony/transitions.js';
 import { skipCeremony } from '../ceremony/hammer.js';
@@ -16,11 +17,13 @@ import {
   kickSphere,
   selectedProject,
   showProject,
+  sphereKeptTouch,
   stepBack,
 } from '../sections/projects/projects.js';
 import { handleMenuKey } from './commit-menu.js';
 
 const SWIPE = 40; // px a finger must travel to count as a swipe
+const SIDEWAYS = 1.2; // a swipe must be this much more vertical than horizontal
 
 function setTrack(index) {
   track.style.transform = `translateY(calc(var(--vh) * ${-100 * index}))`;
@@ -112,27 +115,40 @@ app.addEventListener(
   { passive: false },
 );
 
-let touchStartY = null;
-let touchOnSphere = false;
+// On a touch screen a swipe up goes to the next section and a swipe down to the one before, as on any paged
+// screen. A touch that starts on something that scrolls (an open book, a long list) belongs to that scroll, and
+// a sideways drag on the sphere belongs to the sphere.
+function scrollsItself(target) {
+  for (let el = target; el && el !== app; el = el.parentElement) {
+    const overflow = getComputedStyle(el).overflowY;
+    if ((overflow === 'auto' || overflow === 'scroll') && el.scrollHeight > el.clientHeight + 1) return true;
+  }
+  return false;
+}
+
+let touchStart = null;
 app.addEventListener(
   'touchstart',
   (event) => {
-    touchStartY = event.touches[0].clientY;
-    touchOnSphere = Boolean(event.target.closest?.('#dome-scene, #reader'));
+    const [touch] = event.touches;
+    const single = event.touches.length === 1 && event.target instanceof Element && !scrollsItself(event.target);
+    touchStart = single
+      ? { x: touch.clientX, y: touch.clientY, onSphere: Boolean(event.target.closest('#dome-scene')) }
+      : null;
   },
   { passive: true },
 );
 app.addEventListener(
   'touchend',
   (event) => {
-    const startY = touchStartY;
-    touchStartY = null;
-    if (startY === null || state.isTransitioning || touchOnSphere || state.menuOpen) return;
-    const moved = event.changedTouches[0].clientY - startY;
-    if (Math.abs(moved) < SWIPE) return;
-    const forward = moved > 0; // the finger moves down, the content moves up
-    if (innerScrollBlocks(forward)) return;
-    goTo(state.current + (forward ? 1 : -1));
+    const start = touchStart;
+    touchStart = null;
+    if (!start || state.isTransitioning || state.menuOpen || isReading()) return;
+    if (start.onSphere && sphereKeptTouch()) return;
+    const dx = event.changedTouches[0].clientX - start.x;
+    const dy = event.changedTouches[0].clientY - start.y;
+    if (Math.abs(dy) < SWIPE || Math.abs(dy) < Math.abs(dx) * SIDEWAYS) return;
+    goTo(state.current + (dy < 0 ? 1 : -1));
   },
   { passive: true },
 );

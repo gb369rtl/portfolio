@@ -428,3 +428,19 @@
     overflow: visible;
   }
 }
+
+@media (max-width: 599px) and (orientation: portrait) {
+  .rd-head {
+    padding: calc(14 * var(--u)) calc(16 * var(--u)) calc(16 * var(--u));
+  }
+  .rd-head .branch {
+    margin-bottom: calc(18 * var(--u));
+  }
+  .rd-body {
+    padding: calc(14 * var(--u)) calc(16 * var(--u)) calc(16 * var(--u));
+    gap: calc(12 * var(--u));
+  }
+  .rd-tabs button {
+    min-height: max(44px, calc(46 * var(--u)));
+  }
+}

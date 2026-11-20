@@ -331,3 +331,89 @@
     gap: calc(10 * var(--u));
   }
 }
+
+@media (max-width: 599px) and (orientation: portrait) {
+  .exp {
+    gap: calc(8 * var(--u));
+    padding-top: calc(14 * var(--u));
+  }
+  .exp h2 {
+    font-size: calc(36 * var(--u));
+  }
+  /* the four jobs as a two-by-two grid of full-size tap targets */
+  .exp-rail {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr); /* the first column is as wide as its longer name; the second takes the rest */
+    gap: 0 calc(12 * var(--u));
+    padding-right: 0;
+  }
+  .exp-commit {
+    display: flex;
+    align-items: center;
+    min-width: 0;
+    min-height: max(44px, calc(44 * var(--u)));
+    padding: 0 0 0 calc(20 * var(--u));
+  }
+  .exp-commit::before,
+  .exp-commit::after {
+    top: 50%;
+    margin-top: calc(-6.5 * var(--u));
+  }
+  .exp-commit b {
+    min-width: 0;
+    font-size: calc(16.5 * var(--u));
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .exp-ghost {
+    font-size: calc(17 * var(--u));
+  }
+  .exp-dates {
+    font-size: calc(13 * var(--u));
+  }
+  .exp-card h3 {
+    font-size: calc(34 * var(--u));
+    margin: calc(2 * var(--u)) 0 calc(6 * var(--u));
+  }
+  .exp-role {
+    font-size: calc(15 * var(--u));
+    margin-bottom: calc(10 * var(--u));
+  }
+  /* each line runs the full width, with its scope as a label at the start */
+  .exp-list li {
+    display: block;
+    padding: calc(5 * var(--u)) 0;
+    font-size: calc(14 * var(--u));
+    line-height: 1.36;
+  }
+  .exp-list .scope {
+    margin-right: calc(8 * var(--u));
+    padding-top: 0;
+    font-size: max(11px, calc(11.5 * var(--u)));
+  }
+}
+
+/* a short phone: the same page, set a size smaller */
+@media (max-width: 599px) and (orientation: portrait) and (max-height: 620px) {
+  .exp {
+    gap: calc(6 * var(--u));
+    padding-top: calc(10 * var(--u));
+  }
+  .exp h2 {
+    font-size: calc(30 * var(--u));
+  }
+  .exp-card h3 {
+    font-size: calc(28 * var(--u));
+    margin: 0 0 calc(4 * var(--u));
+  }
+  .exp-role {
+    font-size: calc(14 * var(--u));
+    margin-bottom: calc(8 * var(--u));
+  }
+  .exp-list li {
+    padding: calc(4 * var(--u)) 0;
+    font-size: calc(13.5 * var(--u));
+    line-height: 1.32;
+  }
+}

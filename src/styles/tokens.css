@@ -68,3 +68,13 @@
   --gg-left: clamp(calc(16 * var(--u)), min(4vw, calc(61.44 * var(--u))), calc(70 * var(--u)));
   --gg-w: min(calc(780 * var(--u)), 56vw);
 }
+
+/* A phone held upright: the stacked layout, always drawn 390 units wide. Phones differ most in height, so height
+   is each section's own business: the portrait and the sphere take what is spare, and a section that is still
+   too tall lowers its own unit. */
+@media (max-width: 599px) and (orientation: portrait) {
+  :root {
+    --raw: clamp(0.84px, 100vw / 390, 1.12px);
+    --u0: var(--raw);
+  }
+}
