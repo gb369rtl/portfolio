@@ -18,7 +18,7 @@ import {
   setHeadSection,
 } from '../graph/graph.js';
 import { wait } from '../lib/util.js';
-import { enterExperience, shownExperience } from '../sections/experience.js';
+import { enterExperience, leaveExperience, shownExperience } from '../sections/experience.js';
 import {
   closeBooks,
   isReading,
@@ -49,6 +49,7 @@ async function goTo(toIndex, nav) {
   state.isTransitioning = true;
   hoverCommit(-1);
   const from = state.current;
+  if (SECTIONS[from] === 'experience') leaveExperience(); // before the open job is read, just below
 
   // Coming back to Experience by scrolling returns to the job that was open, so its commit is the one checked
   // out. Without this HEAD would sit on the latest job while the page showed another.

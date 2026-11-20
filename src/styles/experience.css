@@ -199,6 +199,14 @@
 .exp-commit.pressed b {
   scale: 0.94;
 }
+/* The layer the hand, the press ring and the lifted name work in. It has the track's z-index and comes after
+   it in the page, so it is above the sections and below the cover that hides a change of section (#overlay). */
+#exp-float {
+  position: fixed;
+  inset: 0;
+  z-index: 2;
+  pointer-events: none;
+}
 .exp-press {
   position: fixed;
   left: 0;

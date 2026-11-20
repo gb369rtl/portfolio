@@ -59,6 +59,8 @@ Adding a job or a project adds a commit and, for a project, a lane. The tree set
 
 A pause inside a ceremony goes through `sleep()` in `ceremony/hammer.js`, not a plain timer, so Escape can end it at once.
 
+A section that animates outside its own box is told when it is left, before the cover comes up. Experience is the one case: `leaveExperience()` calls off a hand that is still carrying a job. That hand works in a layer of its own (`#exp-float`), above the sections and below the cover, so nothing of it can show while the commands are hammered in.
+
 ## Fitting the screen
 
 Every length in `src/styles/` is `calc(N * var(--u))`. `tokens.css` defines `--u0`, the page's unit, from the window:
