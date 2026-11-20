@@ -98,4 +98,4 @@ Without WebGL, or if anything in the opening throws, `hero.js` falls back to the
 - `tests/` covers the pure code: dates, the Markdown renderer, the git model, the diagram builder, and the content checker (which is run against the real content and against deliberately broken copies of it).
 - `scripts/check-content.mjs` validates `content/`.
 - `scripts/sync-head.mjs --check` fails if `index.html`'s head is out of date with `content/site.json`.
-- CI runs `npm run verify` and `npm run build` on every push to `main` and on pull requests.
+- CI runs `npm run verify` and `npm run build` on every push to `main` and on pull requests. A push to `main` is then deployed: see [deploy.md](deploy.md).

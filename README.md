@@ -1,5 +1,7 @@
 # Portfolio
 
+**Live: <https://gb369rtl.github.io/portfolio/>**
+
 Geetam's portfolio: one page that tells a career as a git history. Scrolling **up** moves forward. Each section adds to a git tree on the left edge, the commands that would create it are "run" on the way in, and the tree is also the navigation: click any commit to go to that job or project.
 
 ![The first screen: a headline on the left and a portrait set in letters on the right, with four name-tagged cursors at work](docs/screenshots/desktop-hero.jpg)
@@ -116,7 +118,7 @@ The same sections on a phone, and the sphere of projects on a wide screen:
 
 ## Putting it online
 
-It is a static site. `npm run build` writes `dist/`; put that folder on any static host. Once the address is known, set `url` in `content/site.json` and run `npm run sync`, so link previews get an absolute image address.
+Every push to `main` is checked and then published to GitHub Pages by `.github/workflows/deploy.yml`. [`docs/deploy.md`](docs/deploy.md) has the details, including the steps for moving to a custom domain.
 
 ## Browser support
 
