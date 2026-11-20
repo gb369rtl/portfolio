@@ -1,0 +1,396 @@
+/* The git tree on the left (also the navigation), the commit table it opens into, and the same table as a menu. */
+
+#graph-wrap {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 4;
+}
+#graph-wrap.elevated {
+  z-index: 5;
+}
+#git-graph {
+  position: absolute;
+  left: var(--graph-pad);
+  bottom: calc(22 * var(--u));
+  transition: opacity 0.3s ease;
+}
+#graph-wrap.full #git-graph,
+#app:has(.orbit.reading) #git-graph {
+  opacity: 0;
+}
+.gg-svg {
+  overflow: visible;
+}
+.gg-svg .gp {
+  fill: none;
+  stroke-width: 2.4;
+  stroke-linecap: round;
+  stroke-dasharray: 1;
+  stroke-dashoffset: 1;
+  transition: stroke-dashoffset 0.8s ease;
+}
+.gg-svg .gp:not(.on) {
+  stroke-opacity: 0;
+}
+.gg-svg .gp.on {
+  stroke-dashoffset: 0;
+}
+.gg-svg .gn {
+  fill: var(--c);
+  stroke: var(--bg);
+  stroke-width: 2;
+  opacity: 0;
+  transform-box: fill-box;
+  transform-origin: center;
+  transform: scale(0.6);
+  transition:
+    opacity 0.25s ease,
+    transform 0.35s var(--ease-out);
+}
+.gg-svg .gn.on {
+  opacity: 1;
+  transform: none;
+}
+.gg-svg .gn.head {
+  fill: var(--bg);
+  stroke: var(--c);
+  stroke-width: 3;
+}
+#git-graph .gg-ink {
+  opacity: 0.55;
+}
+#git-graph .gp {
+  stroke-width: calc(1.9 * var(--u));
+}
+#git-graph .gn {
+  stroke-width: 0.9px;
+}
+#git-graph .gn.head {
+  stroke-width: 1.5px;
+}
+/* every drawn commit has a band as wide as the tree: point anywhere level with it and it is that commit's */
+#git-graph .gh {
+  fill: transparent;
+  pointer-events: none;
+}
+#git-graph .gh.on {
+  pointer-events: all;
+  cursor: pointer;
+}
+#graph-wrap.elevated #git-graph .gh,
+#app:has(.orbit.reading) #git-graph .gh {
+  pointer-events: none;
+}
+#git-graph .gg-hot,
+#git-graph .gg-halo {
+  pointer-events: none;
+  opacity: 0;
+  transform-box: fill-box;
+  transform-origin: center;
+}
+#git-graph .gg-hot {
+  fill: var(--c);
+  stroke: var(--bg);
+  stroke-width: 1.5px;
+  transform: scale(0.5);
+  transition:
+    opacity 0.12s ease,
+    transform 0.22s var(--ease-out);
+  filter: drop-shadow(0 0 calc(5 * var(--u)) var(--c));
+}
+#git-graph .gg-hot.on {
+  opacity: 1;
+  transform: none;
+}
+#git-graph .gg-halo {
+  fill: none;
+  stroke: var(--c);
+  stroke-width: 1.5px;
+}
+#git-graph .gg-halo.on {
+  animation: gg-ping 1.5s var(--ease-out) infinite;
+}
+@keyframes gg-ping {
+  0% {
+    transform: scale(0.8);
+    opacity: 0.85;
+  }
+  100% {
+    transform: scale(2.7);
+    opacity: 0;
+  }
+}
+#gg-tip {
+  position: absolute;
+  left: 0;
+  top: 0;
+  display: flex;
+  align-items: center;
+  gap: calc(7 * var(--u));
+  max-width: min(calc(560 * var(--u)), 62vw);
+  padding: calc(6 * var(--u)) calc(12 * var(--u)) calc(6 * var(--u)) calc(9 * var(--u));
+  background: var(--surface);
+  border: 1px solid var(--rule);
+  box-shadow: 0 calc(16 * var(--u)) calc(30 * var(--u)) calc(-18 * var(--u)) rgba(16, 35, 28, 0.55);
+  font-size: max(11px, calc(13.5 * var(--u)));
+  white-space: nowrap;
+  opacity: 0;
+  translate: calc(-8 * var(--u)) -50%;
+  transition:
+    opacity 0.12s ease,
+    translate 0.22s var(--ease-out);
+}
+#gg-tip.on {
+  opacity: 1;
+  translate: 0 -50%;
+}
+#gg-tip::before {
+  content: '';
+  position: absolute;
+  right: 100%;
+  top: 50%;
+  width: var(--lead, 0px);
+  height: 1.5px;
+  margin-top: -0.75px;
+  background: var(--c);
+}
+#graph-wrap.elevated #gg-tip {
+  opacity: 0;
+}
+
+#gg-full {
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  left: var(--gg-left);
+  width: var(--gg-w);
+  padding: calc(16 * var(--u)) 0 calc(46 * var(--u));
+  display: flex;
+  flex-direction: column;
+  opacity: 0;
+  transform: translateX(calc(-14 * var(--u)));
+  transition:
+    opacity 0.25s ease,
+    transform 0.45s var(--ease-out);
+}
+
+#graph-wrap.full #gg-full {
+  opacity: 1;
+  transform: none;
+}
+.gg-cols {
+  display: flex;
+  gap: calc(8 * var(--u));
+  padding: 0 calc(8 * var(--u)) calc(6 * var(--u)) 0;
+  font-size: max(11px, calc(12.5 * var(--u)));
+  color: var(--text-faint);
+  border-bottom: 1px solid var(--rule);
+}
+.gg-cols span:first-child {
+  width: var(--gg-gw);
+  flex: none;
+}
+.gg-cols span:last-child {
+  margin-left: auto;
+}
+.gg-body {
+  position: relative;
+  flex: 1;
+  min-height: 0;
+}
+#gg-big {
+  position: absolute;
+  left: 0;
+  top: 0;
+  height: 100%;
+  width: var(--gg-gw);
+  z-index: 1;
+}
+#gg-rows {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+}
+.gg-row {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  align-items: center;
+  gap: calc(7 * var(--u));
+  padding: 0 calc(8 * var(--u)) 0 calc(var(--gg-gw) + calc(6 * var(--u)));
+  font-size: max(11px, calc(13.5 * var(--u)));
+  white-space: nowrap;
+  border-bottom: 1px solid color-mix(in srgb, var(--rule) 55%, transparent);
+  opacity: 0;
+  transition:
+    opacity 0.35s ease,
+    background 0.3s ease;
+}
+.gg-row.on {
+  opacity: 1;
+}
+.gg-row.head {
+  background: color-mix(in srgb, var(--mark) 50%, transparent);
+}
+.gg-ref {
+  flex: none;
+  display: inline-flex;
+  align-items: center;
+  gap: calc(5 * var(--u));
+  font: 600 max(10.5px, calc(11.5 * var(--u)))/1.75 var(--font-mono);
+  padding: 0 calc(7 * var(--u)) 0 calc(5 * var(--u));
+  border: 1.5px solid var(--c);
+  background: var(--surface);
+  color: var(--text);
+}
+.gg-ref::before {
+  content: '';
+  width: calc(7 * var(--u));
+  height: calc(7 * var(--u));
+  background: var(--c);
+}
+.gg-ref.dark {
+  background: var(--text);
+  color: var(--on-color);
+  border-color: var(--text);
+  padding-left: calc(7 * var(--u));
+}
+.gg-ref.dark::before {
+  display: none;
+}
+.gg-hp {
+  display: none;
+}
+.gg-row.head .gg-hp {
+  display: inline-flex;
+}
+.gg-row[data-g='merge'].on ~ .gg-row .gg-ref.moves {
+  display: none;
+} /* main has moved on to the merge */
+.gg-msg {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  color: var(--text);
+}
+.gg-msg b {
+  font-weight: 700;
+}
+.gg-when {
+  margin-left: auto;
+  flex: none;
+  padding-left: calc(10 * var(--u));
+  font-size: max(11px, calc(12.5 * var(--u)));
+  color: var(--text-faint);
+  font-variant-numeric: tabular-nums;
+}
+
+/* the same commit table as a menu: where the tree is hidden, and for the keyboard */
+#log-open {
+  position: fixed;
+  z-index: 7;
+  top: calc(10 * var(--u));
+  left: 50%;
+  translate: -50% calc(-70 * var(--u));
+  display: inline-flex;
+  align-items: center;
+  gap: calc(8 * var(--u));
+  min-height: calc(40 * var(--u));
+  padding: 0 calc(14 * var(--u));
+  border: 1.5px solid var(--text);
+  background: var(--surface);
+  color: var(--text);
+  font: 650 max(11px, calc(14 * var(--u)))/1 var(--font-body);
+  cursor: pointer;
+  transition:
+    translate 0.2s var(--ease-out),
+    opacity 0.2s ease;
+}
+#log-open:focus-visible,
+#log-open[aria-expanded='true'] {
+  translate: -50% 0;
+} /* on a large screen it shows only for the keyboard */
+#log-open svg {
+  width: calc(16 * var(--u));
+  height: calc(16 * var(--u));
+  fill: currentColor;
+}
+#app:has(#graph-wrap.elevated:not(.menu)) #log-open,
+#app:has(.orbit.reading) #log-open {
+  opacity: 0;
+  pointer-events: none;
+}
+#graph-wrap.menu #gg-full {
+  pointer-events: auto;
+}
+#graph-wrap.menu .gg-row.on {
+  cursor: pointer;
+}
+#graph-wrap.menu .gg-row.on:focus-visible {
+  outline: calc(3 * var(--u)) solid var(--accent);
+  outline-offset: calc(-3 * var(--u));
+}
+
+@media (hover: hover) and (pointer: fine) {
+  #graph-wrap.menu .gg-row.on:hover {
+    background: color-mix(in srgb, var(--mark) 32%, transparent);
+  }
+  #log-open:hover {
+    background: var(--mark);
+  }
+}
+
+@media (max-width: 900px), (orientation: portrait) {
+  :root {
+    --gg-left: calc(12 * var(--u));
+    --gg-w: calc(100vw - calc(24 * var(--u)));
+  }
+  #git-graph,
+  #gg-tip {
+    display: none;
+  }
+  #gg-full {
+    padding-bottom: 30vh;
+  }
+  .gg-when {
+    display: none;
+  }
+  #log-open {
+    left: auto;
+    right: calc(12 * var(--u));
+    translate: none;
+    width: calc(44 * var(--u));
+    min-height: calc(44 * var(--u));
+    padding: 0;
+    justify-content: center;
+  }
+  #log-open:focus-visible,
+  #log-open[aria-expanded='true'] {
+    translate: none;
+  }
+  #log-open span {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+  }
+  /* as a menu here it is a plain list: no graph column, and the message without its type prefix */
+  #graph-wrap.menu #gg-full {
+    padding-bottom: calc(56 * var(--u));
+  }
+  #graph-wrap.menu #gg-big,
+  #graph-wrap.menu .gg-cols span:first-child,
+  #graph-wrap.menu .gg-msg b {
+    display: none;
+  }
+  #graph-wrap.menu .gg-row {
+    padding-left: calc(10 * var(--u));
+    font-size: calc(14.5 * var(--u));
+  }
+  #graph-wrap.menu .gg-cols {
+    padding-left: calc(10 * var(--u));
+  }
+}

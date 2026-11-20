@@ -1,0 +1,339 @@
+/* Projects: a sphere of books. The sphere is drawn at a fixed size and scaled as a whole by --dome-s. */
+
+.orbit {
+  position: relative;
+  height: calc(96 * var(--vh));
+  max-height: none;
+  overflow: hidden;
+  padding: 0;
+}
+
+.orbit-tl,
+.orbit-tr,
+.orbit-bl {
+  position: absolute;
+  z-index: 3;
+  pointer-events: none;
+  transition: opacity 0.35s ease;
+}
+.orbit-tl {
+  left: calc(2 * var(--u));
+  top: calc(10 * var(--u));
+}
+.orbit-tl h2 {
+  margin: 0;
+}
+.orbit-tr {
+  right: calc(6 * var(--u));
+  top: calc(12 * var(--u));
+  text-align: right;
+  font-size: max(11px, calc(13.5 * var(--u)));
+  color: var(--text-dim);
+}
+.orbit-tr b {
+  display: block;
+  font-family: var(--font-display);
+  font-stretch: 62%;
+  font-size: calc(40 * var(--u));
+  font-weight: 800;
+  color: var(--text);
+  line-height: 0.95;
+}
+.orbit-tr span {
+  transition: opacity 0.35s ease;
+}
+.orbit-bl {
+  left: calc(var(--graph-w) + calc(14 * var(--u)));
+  bottom: calc(16 * var(--u));
+  max-width: 27ch;
+  font-size: calc(14.5 * var(--u));
+  line-height: 1.45;
+  color: var(--text-dim);
+}
+.orbit-br {
+  position: absolute;
+  z-index: 3;
+  right: calc(6 * var(--u));
+  bottom: calc(12 * var(--u));
+  display: grid;
+  grid-template-columns: auto auto;
+  column-gap: calc(18 * var(--u));
+  justify-items: end;
+  transition: opacity 0.3s ease;
+}
+.orbit-br button {
+  display: inline-flex;
+  align-items: center;
+  gap: calc(8 * var(--u));
+  min-height: calc(25 * var(--u));
+  padding: 0;
+  background: none;
+  border: 0;
+  cursor: pointer;
+  font: 500 max(11px, calc(13 * var(--u)))/1 var(--font-body);
+  color: var(--text);
+}
+.orbit-br button::after {
+  content: '';
+  width: calc(9 * var(--u));
+  height: calc(13 * var(--u));
+  background: var(--c);
+  transition: transform 0.2s ease;
+}
+.orbit-br button[aria-pressed='true']::after {
+  transform: scale(1.5);
+}
+.orbit-br button[aria-pressed='true'] {
+  font-weight: 800;
+}
+.orbit.picked .orbit-bl,
+.orbit.picked .orbit-tr span,
+.orbit.picked .orbit-tl,
+.orbit.picked .orbit-br {
+  opacity: 0;
+  pointer-events: none;
+}
+.orbit.reading .orbit-tl,
+.orbit.reading .orbit-tr,
+.orbit.reading .orbit-br {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.dome-scene {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  perspective: 1100px;
+  cursor: grab;
+  touch-action: pan-y;
+  opacity: 0;
+  transform: scale(0.6);
+  transition:
+    opacity 0.4s ease,
+    transform 0.5s var(--ease-out);
+}
+.in .dome-scene {
+  opacity: 1;
+  transform: scale(var(--dome-s, 1));
+}
+.in .orbit.picked .dome-scene {
+  transform: scale(calc(var(--dome-s, 1) * 2.15));
+}
+.dome-tile {
+  transition:
+    transform 0.5s var(--ease-out),
+    opacity 0.25s ease,
+    filter 0.35s ease;
+}
+.orbit.picked .dome-tile:not(.sel) {
+  filter: saturate(0.3) contrast(0.5) brightness(1.3);
+} /* washed out but still solid, so the far side stays hidden */
+.orbit.reading .dome-tile.sel {
+  opacity: 0;
+}
+.in .orbit.reading .dome-scene {
+  transform: scale(calc(var(--dome-s, 1) * 3.4));
+  opacity: 0.18;
+  pointer-events: none;
+}
+.dome-scene.dragging {
+  cursor: grabbing;
+}
+.dome-stage {
+  position: relative;
+  width: 1px;
+  height: 1px;
+  transform-style: preserve-3d;
+}
+.dome-tile {
+  position: absolute;
+  left: -39px;
+  top: -54px;
+  width: 78px;
+  height: 108px;
+  font-size: 10px;
+  cursor: pointer;
+  user-select: none;
+}
+.dome-tile.back {
+  filter: grayscale(1) brightness(0.86);
+}
+
+/* a paperback cover; everything is in em so one markup serves the sphere and the full-size book */
+.cover {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  padding: 0.95em 0.8em 0.85em 1.5em;
+  background-color: var(--c);
+  color: var(--on-color);
+  background-image: linear-gradient(
+    90deg,
+    rgba(0, 0, 0, 0.26) 0,
+    rgba(0, 0, 0, 0.26) 0.62em,
+    rgba(255, 255, 255, 0.16) 0.62em,
+    rgba(255, 255, 255, 0) 1.05em
+  );
+  box-shadow: inset 0 0 0 1px rgba(16, 35, 28, 0.28);
+}
+.cover .by {
+  font: 600 0.74em/1 var(--font-body);
+}
+.cover b {
+  margin-top: 0.5em;
+  font: 800 1.52em/0.9 var(--font-display);
+  font-stretch: 62%;
+  letter-spacing: -0.01em;
+  overflow-wrap: anywhere;
+}
+.cover .tag {
+  margin-top: auto;
+  padding-top: 0.5em;
+  border-top: 0.1em solid currentColor;
+  font: 500 0.66em/1.25 var(--font-mono);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.cover .status {
+  position: absolute;
+  right: -0.2em;
+  bottom: 3.5em;
+  transform: rotate(-7deg);
+  background: var(--mark);
+  color: var(--text);
+  font: 800 0.72em/1 var(--font-body);
+  padding: 0.28em 0.6em;
+}
+.cover .open-hint {
+  display: none;
+}
+.cover.v1 {
+  background-color: var(--surface);
+  color: var(--text);
+  background-image: linear-gradient(
+    90deg,
+    var(--c) 0,
+    var(--c) 1.05em,
+    rgba(0, 0, 0, 0.1) 1.05em,
+    rgba(0, 0, 0, 0) 1.3em
+  );
+  padding-left: 1.75em;
+}
+.cover.v1 b {
+  color: var(--c);
+}
+.cover.v2 {
+  background-color: var(--text);
+  border-bottom: 1.5em solid var(--c);
+}
+
+.orbit-pill {
+  position: absolute;
+  z-index: 6;
+  left: 50%;
+  bottom: calc(12 * var(--u));
+  transform: translateX(-50%);
+  display: flex;
+  align-items: stretch;
+  background: var(--text);
+  color: var(--on-color);
+  font-size: calc(14.5 * var(--u));
+  font-weight: 600;
+  opacity: 0;
+  transition: opacity 0.5s ease 0.5s;
+}
+.in .orbit-pill {
+  opacity: 1;
+}
+.orbit-pill button {
+  border: 0;
+  cursor: pointer;
+  font: inherit;
+  min-height: calc(46 * var(--u));
+  color: inherit;
+  background: none;
+}
+#orbit-btn {
+  width: calc(46 * var(--u));
+  background: var(--accent);
+  display: grid;
+  place-items: center;
+}
+#orbit-btn svg {
+  width: calc(18 * var(--u));
+  height: calc(18 * var(--u));
+  transition: transform 0.35s var(--ease-rubber);
+}
+.orbit.picked #orbit-btn svg {
+  transform: rotate(45deg);
+}
+#orbit-name {
+  display: flex;
+  align-items: center;
+  padding: 0 calc(18 * var(--u));
+  min-width: calc(240 * var(--u));
+  white-space: nowrap;
+}
+#orbit-next {
+  padding: 0 calc(18 * var(--u));
+  border-left: 1px solid rgba(251, 252, 249, 0.28);
+  transition: background 0.15s ease;
+}
+#orbit-next:hover {
+  background: #2e4a3f;
+}
+
+.dome-tile .cover,
+.orbit-pill button,
+.orbit-br button {
+  transition: scale 0.16s var(--ease-out);
+}
+#orbit-next {
+  transition:
+    scale 0.16s var(--ease-out),
+    background 0.15s ease;
+}
+.dome-tile:active .cover,
+.orbit-pill button:active,
+.orbit-br button:active {
+  scale: 0.97;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .orbit-br button:hover::after {
+    transform: scale(1.5);
+  }
+}
+
+@media (min-width: 901px) and (orientation: landscape) {
+  /* the tree runs the full height of the page, so the heading in the top-left corner sits beside it */
+  .orbit .orbit-tl {
+    left: calc(var(--graph-w) + calc(14 * var(--u)));
+  }
+}
+
+@media (max-width: 1240px) {
+  .orbit-bl {
+    bottom: calc(78 * var(--u));
+  }
+}
+
+@media (max-width: 900px), (orientation: portrait) {
+  .orbit-tr {
+    right: calc(60 * var(--u));
+  }
+  .orbit-bl,
+  .orbit-tr span,
+  .orbit-br {
+    display: none;
+  }
+  #orbit-name {
+    min-width: 0;
+  }
+}

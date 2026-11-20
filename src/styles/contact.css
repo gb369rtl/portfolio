@@ -1,0 +1,151 @@
+/* Let's talk: how to reach me, and what this release contains. */
+
+.tag-line {
+  display: flex;
+  align-items: center;
+  gap: calc(10 * var(--u));
+  margin: 0 0 calc(18 * var(--u));
+  color: var(--text-dim);
+  font-size: max(11px, calc(13 * var(--u)));
+}
+.tag-line .pill {
+  background: var(--accent);
+  color: var(--on-color);
+  font-weight: 700;
+  padding: calc(2 * var(--u)) calc(9 * var(--u));
+  font-size: max(11px, calc(12.5 * var(--u)));
+}
+[data-key='contact'] h2 {
+  font-size: clamp(calc(64 * var(--u)), min(9vw, calc(138.24 * var(--u))), calc(150 * var(--u)));
+  line-height: 0.8;
+  margin-bottom: calc(24 * var(--u));
+}
+.links {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: calc(6 * var(--u)) calc(30 * var(--u));
+  margin-bottom: calc(30 * var(--u));
+}
+.links a,
+.links .mail {
+  display: inline-flex;
+  align-items: center;
+  min-height: calc(44 * var(--u));
+  padding: 0 calc(4 * var(--u));
+  margin-left: calc(-4 * var(--u));
+  font-size: calc(18 * var(--u));
+  font-weight: 650;
+  color: var(--text);
+  text-decoration: none;
+  background: linear-gradient(var(--mark), var(--mark)) no-repeat 0 100% / 100% calc(3 * var(--u));
+  transition: background-size 0.25s var(--ease-out);
+}
+.links a:hover,
+.links .mail:hover,
+.links .mail.done {
+  background-size: 100% 100%;
+  color: var(--text);
+}
+/* the address is a button: a click copies it and says so in place */
+.links .mail {
+  border: 0;
+  cursor: pointer;
+  text-align: left;
+  font-family: var(--font-display);
+  font-stretch: 68%;
+  font-weight: 800;
+  font-size: clamp(calc(28 * var(--u)), min(3.2vw, calc(49.15 * var(--u))), calc(46 * var(--u)));
+  line-height: 1.2;
+  min-height: calc(56 * var(--u));
+  background-color: transparent;
+}
+footer.contact-foot {
+  display: flex;
+  flex-wrap: wrap;
+  gap: calc(2 * var(--u)) calc(22 * var(--u));
+  font-size: max(11px, calc(14 * var(--u)));
+  color: var(--text-faint);
+}
+/* what the release contains: the story in three lines, each one a way back into the page */
+[data-key='contact'] .section-inner {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(calc(280 * var(--u)), calc(400 * var(--u)));
+  column-gap: clamp(calc(28 * var(--u)), min(5vw, calc(76.8 * var(--u))), calc(96 * var(--u)));
+  align-items: center;
+}
+.release-cmd {
+  margin: 0 0 calc(12 * var(--u));
+  font: 500 max(11px, calc(13 * var(--u)))/1.5 var(--font-mono);
+  color: var(--text-dim);
+}
+.release-cmd b {
+  margin-right: 0.6em;
+  color: var(--accent);
+  font-weight: 700;
+}
+#release-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  border-top: calc(2 * var(--u)) solid var(--text);
+}
+#release-list li {
+  border-bottom: 1px solid var(--rule);
+}
+#release-list button {
+  display: grid;
+  grid-template-columns: calc(92 * var(--u)) minmax(0, 1fr);
+  gap: calc(14 * var(--u));
+  align-items: baseline;
+  width: 100%;
+  padding: calc(11 * var(--u)) calc(6 * var(--u)) calc(11 * var(--u)) 0;
+  border: 0;
+  text-align: left;
+  cursor: pointer;
+  font: 400 calc(15.5 * var(--u))/1.42 var(--font-body);
+  color: var(--text-dim);
+  background: linear-gradient(var(--mark), var(--mark)) no-repeat 0 100% / 0% 100%;
+  transition:
+    background-size 0.25s var(--ease-out),
+    color 0.15s ease;
+}
+#release-list .scope {
+  font: 700 max(11px, calc(12 * var(--u)))/1.5 var(--font-mono);
+  color: var(--accent);
+}
+#release-list button:active {
+  scale: 0.99;
+}
+.release-note {
+  margin: calc(12 * var(--u)) 0 0;
+  font-size: max(11px, calc(13.5 * var(--u)));
+  color: var(--text-faint);
+}
+@media (hover: hover) and (pointer: fine) {
+  #release-list button:hover {
+    background-size: 100% 100%;
+    color: var(--text);
+  }
+}
+
+[data-key='contact'] .section-inner > * {
+  opacity: 0;
+  transition: opacity 0.5s ease;
+}
+[data-key='contact'].in .section-inner > * {
+  opacity: 1;
+}
+
+@media (max-width: 900px), (orientation: portrait) {
+  [data-key='contact'] .section-inner {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .release {
+    margin-top: calc(30 * var(--u));
+    max-width: calc(460 * var(--u));
+  }
+}
+[data-key='contact'] .bio {
+  margin-bottom: calc(22 * var(--u));
+}

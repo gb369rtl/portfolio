@@ -1,0 +1,54 @@
+/* The track of full-screen sections. One section fills the screen; the track moves to change section. */
+
+#track {
+  position: fixed;
+  inset: 0;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  transition: none;
+  will-change: transform;
+}
+.story-section {
+  position: relative;
+  height: calc(100 * var(--vh));
+  width: 100%;
+  flex-shrink: 0;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  padding: clamp(calc(18 * var(--u)), min(4.5vh, calc(31.27 * var(--u))), calc(44 * var(--u)))
+    clamp(calc(20 * var(--u)), min(3.4vw, calc(52.22 * var(--u))), calc(52 * var(--u))) 0
+    calc(var(--graph-pad) + var(--graph-w) + calc(34 * var(--u)));
+}
+.story-section[data-key='hero'],
+.story-section[data-key='contact'],
+.story-section[data-key='skills'] {
+  align-items: center;
+  padding-top: 0;
+}
+.story-section[data-key='projects'] {
+  align-items: center;
+  padding: 0 clamp(calc(20 * var(--u)), min(3.4vw, calc(52.22 * var(--u))), calc(52 * var(--u)));
+}
+.section-inner {
+  width: 100%;
+  max-height: calc(94 * var(--vh));
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding: calc(10 * var(--u)) calc(2 * var(--u)) calc(14 * var(--u));
+  scrollbar-width: thin;
+  scrollbar-color: var(--rule) transparent;
+}
+.section-inner::-webkit-scrollbar {
+  width: calc(6 * var(--u));
+}
+.section-inner::-webkit-scrollbar-thumb {
+  background: var(--rule);
+}
+
+@media (max-width: 900px), (orientation: portrait) {
+  .story-section {
+    padding: 0 calc(20 * var(--u));
+  }
+}

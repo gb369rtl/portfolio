@@ -1,0 +1,106 @@
+/* Page defaults and the type shared by every section. */
+
+* {
+  box-sizing: border-box;
+}
+html,
+body {
+  height: 100%;
+  margin: 0;
+  overscroll-behavior: none;
+}
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font-body);
+  font-size: calc(16 * var(--u));
+  line-height: 1.55;
+  overflow: hidden;
+  -webkit-font-smoothing: antialiased;
+}
+a {
+  color: var(--text);
+  text-decoration-color: var(--accent);
+  text-decoration-thickness: calc(2 * var(--u));
+  text-underline-offset: calc(4 * var(--u));
+}
+a:hover {
+  color: var(--accent);
+}
+a:focus-visible,
+button:focus-visible,
+[tabindex]:focus-visible {
+  outline: calc(3 * var(--u)) solid var(--accent);
+  outline-offset: calc(3 * var(--u));
+}
+::selection {
+  background: var(--mark);
+  color: var(--text);
+}
+.mono {
+  font-family: var(--font-mono);
+}
+#app {
+  position: fixed;
+  inset: 0;
+}
+
+/* display type: one family, pushed to its narrow, heavy end */
+h1,
+h2,
+h3 {
+  font-family: var(--font-display);
+  font-stretch: 62%;
+  font-weight: 800;
+  margin: 0;
+  letter-spacing: -0.015em;
+}
+h2 {
+  font-size: clamp(calc(42 * var(--u)), min(4.6vw, calc(70.66 * var(--u))), calc(68 * var(--u)));
+  line-height: 0.88;
+  margin-bottom: calc(16 * var(--u));
+}
+.bio {
+  max-width: 46ch;
+  margin: 0 0 calc(28 * var(--u));
+  color: var(--text-dim);
+  font-size: calc(17 * var(--u));
+}
+button {
+  font-family: inherit;
+}
+.mono {
+  font-family: var(--font-mono);
+}
+noscript p {
+  position: fixed;
+  inset: auto 0 0 0;
+  z-index: 9;
+  margin: 0;
+  padding: calc(14 * var(--u)) calc(20 * var(--u));
+  background: var(--text);
+  color: var(--on-color);
+}
+noscript a {
+  color: inherit;
+}
+.load-error {
+  position: fixed;
+  inset: 0;
+  z-index: 9;
+  display: grid;
+  place-content: center;
+  gap: calc(8 * var(--u));
+  padding: calc(24 * var(--u));
+  background: var(--bg);
+  text-align: center;
+}
+.load-error b {
+  font: 800 calc(34 * var(--u))/1 var(--font-display);
+  font-stretch: 62%;
+}
+.load-error p {
+  margin: 0;
+  max-width: 52ch;
+  color: var(--text-dim);
+}

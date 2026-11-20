@@ -1,0 +1,150 @@
+/* What covers the page while a section changes: the cover, the hammered commands and the hammer. */
+
+#overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 3;
+  background: var(--bg);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s ease;
+}
+#overlay.active {
+  opacity: 1;
+  pointer-events: auto;
+}
+#cmd-stack {
+  position: fixed;
+  z-index: 6;
+  top: 50%;
+  transform: translateY(-50%);
+  left: calc(var(--gg-left) + var(--gg-w) + calc(48 * var(--u)));
+  right: calc(24 * var(--u));
+  font-family: var(--font-mono);
+  font-size: clamp(calc(13 * var(--u)), min(1.25vw, calc(19.2 * var(--u))), calc(19 * var(--u)));
+  font-weight: 700;
+  color: var(--text);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.25s ease;
+}
+#cmd-stack.active {
+  opacity: 1;
+}
+.cmd-line {
+  position: relative;
+  padding: calc(7 * var(--u)) 0 calc(7 * var(--u)) calc(14 * var(--u));
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  visibility: hidden;
+  transform-origin: left center;
+}
+.cmd-line.hit {
+  visibility: visible;
+  animation: stamp 0.16s cubic-bezier(0.2, 0.9, 0.3, 1.2);
+}
+.cmd-line .prompt {
+  color: var(--accent);
+  margin-right: 0.6em;
+}
+@keyframes stamp {
+  0% {
+    transform: scale(1.4);
+    opacity: 0;
+    filter: blur(calc(3 * var(--u)));
+  }
+  45% {
+    opacity: 1;
+    filter: blur(0);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+#hammer {
+  position: absolute;
+  left: calc(-17 * var(--u));
+  top: 0;
+  width: calc(154 * var(--u));
+  height: calc(110 * var(--u));
+  transform-origin: 95% 37%;
+  transform: rotate(64deg); /* the pivot is the far end of the handle */
+  opacity: 0;
+  transition: opacity 0.15s ease;
+  pointer-events: none;
+  z-index: 2;
+}
+#hammer.shown {
+  opacity: 1;
+}
+/* the hammer is the word Enter: the E is the head, "nter" is the handle */
+#hammer .h-head {
+  fill: var(--text);
+  stroke: var(--text);
+  stroke-width: 2;
+  stroke-linejoin: round;
+}
+#hammer .h-face {
+  fill: #2e4a3f;
+  stroke: #2e4a3f;
+  stroke-width: 2;
+  stroke-linejoin: round;
+}
+#hammer .h-handle {
+  font-family: var(--font-display);
+  font-size: 28px;
+  font-weight: 900;
+  font-stretch: 125%;
+  fill: #9a6a1c;
+}
+.impact-ring {
+  position: absolute;
+  width: calc(170 * var(--u));
+  height: calc(170 * var(--u));
+  margin: calc(-85 * var(--u)) 0 0 calc(-85 * var(--u));
+  border: calc(2 * var(--u)) solid var(--text);
+  border-radius: 50%;
+  pointer-events: none;
+}
+.impact-flash {
+  position: absolute;
+  width: calc(90 * var(--u));
+  height: calc(90 * var(--u));
+  margin: calc(-45 * var(--u)) 0 0 calc(-45 * var(--u));
+  border-radius: 50%;
+  pointer-events: none;
+  background: radial-gradient(circle, rgba(243, 226, 75, 0.95), rgba(243, 226, 75, 0) 68%);
+}
+.debris {
+  position: absolute;
+  width: calc(5 * var(--u));
+  height: calc(5 * var(--u));
+  background: var(--text);
+  pointer-events: none;
+}
+#skip-hint {
+  position: fixed;
+  z-index: 6;
+  bottom: calc(22 * var(--u));
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: max(11px, calc(13 * var(--u)));
+  color: var(--text-faint);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s ease;
+}
+#skip-hint.active {
+  opacity: 1;
+}
+
+@media (max-width: 900px), (orientation: portrait) {
+  #cmd-stack {
+    left: calc(16 * var(--u));
+    right: calc(16 * var(--u));
+    top: auto;
+    bottom: 7vh;
+    transform: none;
+    background: color-mix(in srgb, var(--bg) 88%, transparent);
+  }
+}

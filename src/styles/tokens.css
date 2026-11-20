@@ -1,0 +1,74 @@
+/* Design tokens. Colours, type and motion are fixed; every length on the page is a multiple of --u. */
+
+:root {
+  /* a marked-up paper document: green ink, a red pencil, a yellow highlighter */
+  --bg: #f2f4ef;
+  --surface: #fbfcf9;
+  --text: #10231c;
+  --text-dim: #3a4d45;
+  --text-faint: #5d6e66;
+  --accent: #c92a0e;
+  --mark: #f3e24b;
+  --on-color: #fbfcf9;
+  --rule: #c9d0c8;
+  --go: #1b8a5a;
+
+  /* branch colours: experience, dev, then one per project in order (they repeat after twelve) */
+  --lane-exp: #c92a0e;
+  --lane-dev: #8a5a00;
+  --lane-0: #c92a0e;
+  --lane-1: #1f4fd8;
+  --lane-2: #0f6b4f;
+  --lane-3: #8a5a00;
+  --lane-4: #6b2fa8;
+  --lane-5: #0b6e7a;
+  --lane-6: #b8430a;
+  --lane-7: #22308f;
+  --lane-8: #56661a;
+  --lane-9: #a61e5c;
+  --lane-10: #6e3b1e;
+  --lane-11: #3f5563;
+
+  --ease-rubber: cubic-bezier(0.34, 1.56, 0.64, 1);
+  --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+
+  --font-display: 'Archivo', 'Arial Narrow', 'Helvetica Neue', Arial, sans-serif;
+  --font-body: 'Archivo', 'Helvetica Neue', Arial, sans-serif;
+  --font-read: 'Source Serif 4', Georgia, 'Times New Roman', serif;
+  --font-mono: 'JetBrains Mono', 'Cascadia Code', Consolas, ui-monospace, monospace;
+
+  /* One design pixel. The page is drawn for a 1536 x 695 window and every length is a multiple of --u, so the
+     same drawing fits a small laptop and a 32-inch monitor without scrolling. Above the design size it grows a
+     little slower than the window, so a large monitor gains room as well as size.
+     --u0 is the page's unit; a section that would not fit lowers its own --u (see src/core/scale.js). */
+  --vh: 1vh;
+  --raw: min(100vw / 1536, var(--vh) * 100 / 695);
+  --u0: min(var(--raw), 0.2px + 0.8 * var(--raw));
+  --u: var(--u0);
+}
+@supports (height: 1dvh) {
+  :root {
+    --vh: 1dvh;
+  }
+}
+/* a landscape tablet has height to spare and little width: the same layout, measured against a narrower drawing */
+@media (max-width: 1240px) and (orientation: landscape) {
+  :root {
+    --raw: min(100vw / 1180, var(--vh) * 100 / 695);
+  }
+}
+/* portrait screens and narrow windows get the stacked layout, drawn for a 390 x 700 phone and grown gently with width */
+@media (max-width: 900px), (orientation: portrait) {
+  :root {
+    --raw: min(100vw / 390, var(--vh) * 100 / 700, 1px + (100vw - 390px) / 1500);
+    --u0: var(--raw);
+  }
+}
+
+:root {
+  /* the git tree on the left (src/graph sets --graph-w from the number of lanes), and the commit table it opens into */
+  --graph-pad: clamp(calc(10 * var(--u)), min(2vw, calc(30.72 * var(--u))), calc(32 * var(--u)));
+  --graph-w: calc(114 * var(--u));
+  --gg-left: clamp(calc(16 * var(--u)), min(4vw, calc(61.44 * var(--u))), calc(70 * var(--u)));
+  --gg-w: min(calc(780 * var(--u)), 56vw);
+}

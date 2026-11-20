@@ -1,0 +1,459 @@
+/* Hero: the page arrives as a ring of pixels, and four cursors carry them out to every part. */
+
+.story-section[data-key='hero'] {
+  --edge: clamp(calc(20 * var(--u)), min(4vw, calc(61.44 * var(--u))), calc(64 * var(--u)));
+}
+
+.hero-stage {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+  pointer-events: none;
+}
+#frame-label {
+  position: absolute;
+  top: calc(18 * var(--u));
+  right: clamp(calc(20 * var(--u)), min(3.4vw, calc(52.22 * var(--u))), calc(52 * var(--u)));
+  margin: 0;
+  font-size: max(11px, calc(13 * var(--u)));
+  color: var(--text-faint);
+}
+#hero-brand {
+  position: absolute;
+  top: calc(18 * var(--u));
+  left: var(--text-left, var(--edge));
+  font: 800 calc(24 * var(--u))/1 var(--font-display);
+  font-stretch: 68%;
+}
+.hero-late {
+  transition: opacity 0.9s ease;
+}
+[data-phase='loading'] .hero-late {
+  opacity: 0;
+}
+
+/* the portrait's frame: the letters are drawn on the canvas behind it, the photograph shows inside it */
+#hero-photo {
+  position: absolute;
+  mix-blend-mode: multiply;
+}
+#hero-photo img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  opacity: 0;
+  transition: opacity 0.18s ease;
+  -webkit-mask-image:
+    linear-gradient(#000 62%, transparent 97%), linear-gradient(90deg, transparent, #000 14%, #000 86%, transparent);
+  mask-image:
+    linear-gradient(#000 62%, transparent 97%), linear-gradient(90deg, transparent, #000 14%, #000 86%, transparent);
+  -webkit-mask-composite: source-in;
+  mask-composite: intersect;
+}
+#hero-photo img.on {
+  opacity: 1;
+}
+
+/* the words, on the left, top to bottom: availability, greeting, headline, bio, two actions, two links.
+   The script sets the column's width and `left` so the gaps either side of it match. */
+#hero-text {
+  position: absolute;
+  left: var(--edge);
+  width: min(40vw, calc(620 * var(--u)));
+  top: 50%;
+  translate: 0 -50%;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+.hero-intro {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: calc(12 * var(--u));
+}
+.avail {
+  display: inline-flex;
+  align-items: center;
+  gap: calc(8 * var(--u));
+  margin: 0;
+  padding: 0 calc(10 * var(--u)) 0 calc(8 * var(--u));
+  font: 600 max(11px, calc(12 * var(--u)))/2.1 var(--font-mono);
+  border: 1.5px solid var(--text);
+  background: var(--surface);
+}
+.avail i {
+  position: relative;
+  flex: none;
+  width: calc(8 * var(--u));
+  height: calc(8 * var(--u));
+  border-radius: 50%;
+  background: var(--go);
+}
+.avail i::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  border: 1.5px solid var(--go);
+  animation: avail-ping 2.6s var(--ease-out) infinite;
+}
+@keyframes avail-ping {
+  0% {
+    transform: scale(1);
+    opacity: 0.8;
+  }
+  70%,
+  100% {
+    transform: scale(2.8);
+    opacity: 0;
+  }
+}
+.hello {
+  margin: 0;
+  font-size: clamp(calc(18 * var(--u)), min(1.5vw, calc(23.04 * var(--u))), calc(23 * var(--u)));
+  font-weight: 650;
+  line-height: 1.2;
+}
+#hero-text h1 {
+  margin-top: calc(10 * var(--u));
+  max-width: 100%;
+  font-size: clamp(
+    calc(34 * var(--u)),
+    min(min(3.5vw, calc(53.76 * var(--u))), min(8vh, calc(55.6 * var(--u)))),
+    calc(60 * var(--u))
+  );
+  line-height: 0.97;
+  letter-spacing: -0.012em;
+  text-wrap: balance;
+}
+#hero-text h1 span {
+  background: linear-gradient(var(--mark), var(--mark)) no-repeat 0 84% / 100% 42%;
+  -webkit-box-decoration-break: clone;
+  box-decoration-break: clone;
+  transition: opacity 0.35s ease;
+}
+
+#hero-text .bio {
+  margin: calc(16 * var(--u)) 0 0;
+  font-size: clamp(calc(15 * var(--u)), min(1.15vw, calc(17.66 * var(--u))), calc(17.5 * var(--u)));
+  line-height: 1.5;
+}
+
+.hero-actions {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: calc(12 * var(--u));
+  margin-top: calc(24 * var(--u));
+}
+.hero-cta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: calc(10 * var(--u));
+}
+.hero-btn {
+  display: inline-flex;
+  align-items: center;
+  min-height: calc(44 * var(--u));
+  padding: 0 calc(20 * var(--u));
+  border: 1.5px solid var(--text);
+  cursor: pointer;
+  font: 650 calc(15 * var(--u))/1 var(--font-body);
+  transition:
+    background 0.15s ease,
+    border-color 0.15s ease,
+    scale 0.16s var(--ease-out);
+}
+.hero-btn.solid {
+  background: var(--text);
+  color: var(--on-color);
+}
+.hero-btn.line {
+  background: transparent;
+  color: var(--text);
+}
+.hero-btn:active {
+  scale: 0.97;
+}
+.hero-social {
+  display: flex;
+  gap: calc(2 * var(--u));
+  margin-left: calc(-11 * var(--u));
+}
+.hero-social a {
+  display: grid;
+  place-items: center;
+  width: calc(44 * var(--u));
+  height: calc(44 * var(--u));
+  color: var(--text-dim);
+  transition: color 0.15s ease;
+}
+.hero-social svg {
+  width: calc(21 * var(--u));
+  height: calc(21 * var(--u));
+  fill: currentColor;
+}
+.hero-social .cv {
+  display: inline-flex;
+  align-items: center;
+  gap: calc(7 * var(--u));
+  width: auto;
+  padding: 0 calc(12 * var(--u)) 0 calc(10 * var(--u));
+  font: 650 calc(14.5 * var(--u))/1 var(--font-body);
+  text-decoration: none;
+}
+.hero-social .cv svg {
+  width: calc(19 * var(--u));
+  height: calc(19 * var(--u));
+  fill: none;
+  stroke: currentColor;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+@media (hover: hover) and (pointer: fine) {
+  .hero-btn.solid:hover {
+    background: var(--accent);
+    border-color: var(--accent);
+  }
+  .hero-btn.line:hover {
+    background: var(--mark);
+  }
+  .hero-social a:hover {
+    color: var(--accent);
+  }
+}
+/* the one instruction the page needs, at the foot of the text column */
+#scroll-hint {
+  position: absolute;
+  left: var(--text-left, var(--edge));
+  bottom: calc(22 * var(--u));
+  display: flex;
+  align-items: center;
+  gap: calc(8 * var(--u));
+  font-size: max(11px, calc(13.5 * var(--u)));
+  font-weight: 600;
+  color: var(--text-dim);
+}
+#scroll-hint svg {
+  width: calc(16 * var(--u));
+  height: calc(16 * var(--u));
+  animation: hint-up 1.6s ease-in-out infinite;
+}
+@keyframes hint-up {
+  0%,
+  100% {
+    transform: translateY(calc(2 * var(--u)));
+  }
+  50% {
+    transform: translateY(calc(-3 * var(--u)));
+  }
+}
+
+/* the count: a ring of marks that fills to 100, once, for the whole page */
+#hero-loader {
+  display: none;
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: calc(220 * var(--u));
+  height: calc(220 * var(--u));
+  margin: calc(-110 * var(--u)) 0 0 calc(-110 * var(--u));
+  pointer-events: none;
+}
+[data-phase] > #hero-loader {
+  display: block;
+}
+#hero-loader svg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}
+#hero-loader svg circle {
+  fill: color-mix(in srgb, var(--text) 16%, transparent);
+  transition: fill 0.25s;
+}
+#hero-loader svg [data-on] {
+  fill: var(--text);
+}
+.loader__count,
+.loader__label {
+  position: absolute;
+  left: 0;
+  width: 100%;
+  text-align: center;
+  white-space: nowrap;
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
+}
+.loader__count {
+  top: 50%;
+  translate: 0 -62%;
+  font-size: calc(34 * var(--u));
+  font-weight: 500;
+  letter-spacing: 0.02em;
+}
+.loader__label {
+  top: 50%;
+  translate: 0 calc(24 * var(--u));
+  font-size: max(11px, calc(12 * var(--u)));
+  color: var(--text-faint);
+}
+[data-phase='ready'] > #hero-loader svg {
+  opacity: 0;
+  transition: opacity 0.5s;
+}
+[data-phase='ready'] > #hero-loader .loader__count,
+[data-phase='ready'] > #hero-loader .loader__label {
+  opacity: 0;
+  transition: opacity 0.35s;
+}
+
+/* the parts the cursors place */
+.asm {
+  position: relative;
+  --sel: #1f4fd8;
+  transition:
+    opacity 0.35s ease,
+    color 0.35s ease;
+}
+.asm.pre {
+  opacity: 0;
+  pointer-events: none;
+}
+.asm.selected {
+  opacity: 1;
+  outline: 1.5px solid var(--sel);
+  outline-offset: calc(5 * var(--u));
+}
+.asm.selected.pre {
+  color: transparent;
+} /* the frame shows before its content has landed */
+.asm.selected.pre > * {
+  opacity: 0;
+}
+.asm.selected::before {
+  content: attr(data-label);
+  position: absolute;
+  left: calc(-6.5 * var(--u));
+  bottom: calc(100% + calc(6 * var(--u)));
+  background: var(--sel);
+  color: #fff;
+  font: 600 max(10.5px, calc(11 * var(--u)))/1.5 var(--font-mono);
+  font-stretch: 100%;
+  letter-spacing: 0;
+  padding: 0 calc(6 * var(--u));
+  white-space: nowrap;
+}
+.asm.selected::after {
+  content: '';
+  position: absolute;
+  inset: calc(-9.5 * var(--u));
+  pointer-events: none;
+  background:
+    linear-gradient(var(--sel), var(--sel)) top left / calc(7 * var(--u)) calc(7 * var(--u)) no-repeat,
+    linear-gradient(var(--sel), var(--sel)) top right / calc(7 * var(--u)) calc(7 * var(--u)) no-repeat,
+    linear-gradient(var(--sel), var(--sel)) bottom left / calc(7 * var(--u)) calc(7 * var(--u)) no-repeat,
+    linear-gradient(var(--sel), var(--sel)) bottom right / calc(7 * var(--u)) calc(7 * var(--u)) no-repeat;
+}
+.floating .asm {
+  animation: floaty 7s ease-in-out infinite;
+}
+.floating #hero-photo {
+  animation-duration: 9s;
+}
+.floating .hero-intro {
+  animation-duration: 6s;
+  animation-delay: -2s;
+}
+.floating .bio {
+  animation-duration: 8s;
+  animation-delay: -4s;
+}
+.floating .hero-actions {
+  animation-duration: 5s;
+  animation-delay: -1s;
+}
+@keyframes floaty {
+  0%,
+  100% {
+    translate: 0 0;
+  }
+  50% {
+    translate: 0 calc(-7 * var(--u));
+  }
+}
+
+#cursor-layer {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 4;
+  overflow: hidden;
+}
+.fake-cursor {
+  position: absolute;
+  left: 0;
+  top: 0;
+  will-change: transform;
+}
+.fake-cursor svg {
+  display: block;
+  width: calc(18 * var(--u));
+  height: calc(22 * var(--u));
+}
+.fake-cursor span {
+  position: absolute;
+  left: calc(13 * var(--u));
+  top: calc(17 * var(--u));
+  font: 650 max(11px, calc(12 * var(--u)))/1.6 var(--font-body);
+  color: #fff;
+  padding: 0 calc(8 * var(--u));
+  white-space: nowrap;
+}
+#draw-rect {
+  position: absolute;
+  display: none;
+  border: 1.5px solid #a61e5c;
+  background: rgba(166, 30, 92, 0.08);
+}
+
+@media (max-width: 900px), (orientation: portrait) {
+  #hero-text {
+    left: calc(20 * var(--u));
+    right: calc(20 * var(--u));
+    width: auto;
+    top: auto;
+    bottom: calc(14 * var(--u));
+    translate: 0 0;
+  }
+  .hero-intro {
+    gap: calc(8 * var(--u));
+  }
+  #hero-text h1 {
+    font-size: clamp(calc(28 * var(--u)), min(8.4vw, calc(129.02 * var(--u))), calc(46 * var(--u)));
+    margin-top: calc(8 * var(--u));
+  }
+  #hero-text .bio {
+    font-size: calc(14.5 * var(--u));
+    margin-top: calc(10 * var(--u));
+  }
+  .hero-actions {
+    margin-top: calc(16 * var(--u));
+    gap: calc(4 * var(--u));
+  }
+  #scroll-hint {
+    left: auto;
+    right: calc(20 * var(--u));
+    bottom: calc(26 * var(--u));
+  }
+  #frame-label {
+    display: none;
+  }
+}
