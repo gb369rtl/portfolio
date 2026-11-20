@@ -23,37 +23,51 @@ const LIFT = 34; // how far the chosen book comes forward
 // scene's perspective (620px, in projects.css).
 const REACH = 242;
 const ROW_GAP = 3; // the room between a ring of books and the ring above it
-const SLIT = 6; // the room between two books side by side on the equator
-// How large the books are in each ring, from the equator to a pole. The ring nearest a pole holds smaller
-// books: a flat book fans away from its neighbours as it nears a pole, and a smaller one fans less, so the cap
-// stays closed instead of opening into wide wedges.
+const SIDE_GAP = 3; // the room between two books side by side, measured where they come closest
+// About how large the books are in each ring, from the equator to a pole. The ring nearest a pole holds
+// smaller books: a flat book fans away from its neighbours as it nears a pole, and a smaller one fans less,
+// so the cap stays closed instead of opening into wide wedges.
 const RING_SIZES = [1, 1, 0.7];
 
-// Rings of books from pole to pole: each with its latitude in degrees, the size of its books and the least
-// room between neighbours. The rings are packed as closely as they go without one book covering another: each
-// sits ROW_GAP above the one below, and away from the equator the corners nearer the pole all but touch.
-const RINGS = (() => {
-  const upper = [];
-  let top = BOOK_H / 2; // how high the ring below reaches; this starts with the equator's
-  for (const size of RING_SIZES.slice(1)) {
+// One ring, resting ROW_GAP above `below` (the height the ring under it reaches; null for the equator).
+// A whole number of books has to go round, so the size asked for is adjusted a little, up or down, until the
+// books stand exactly SIDE_GAP apart. A book is a flat tile touching the sphere at its centre, so away from
+// the equator its edge nearer the pole sits on a smaller circle than its centre does; that edge is where
+// neighbours come closest, and it is the one measured.
+function fitRing(wanted, below) {
+  let size = wanted;
+  let books = 0;
+  let angle = 0;
+  for (let pass = 0; pass < 6; pass++) {
     const half = (BOOK_H * size) / 2;
-    // The latitude that puts this ring's lower edge ROW_GAP above `top`. A book is a flat tile touching the
-    // sphere at its centre, so its lower edge is at height RADIUS sin(a) - half cos(a); solved here for a.
-    const angle = Math.asin((top + ROW_GAP) / Math.hypot(RADIUS, half)) + Math.atan(half / RADIUS);
-    upper.push({ latitude: +((angle * 180) / Math.PI).toFixed(2), size, gap: 1 });
-    top = RADIUS * Math.sin(angle) + half * Math.cos(angle);
+    // the latitude that puts the lower edge, at height RADIUS sin(a) - half cos(a), ROW_GAP above the ring below
+    angle = below === null ? 0 : Math.asin((below + ROW_GAP) / Math.hypot(RADIUS, half)) + Math.atan(half / RADIUS);
+    const around = 2 * Math.PI * (RADIUS * Math.cos(angle) - half * Math.sin(angle));
+    if (pass === 0) books = Math.max(3, Math.round(around / (BOOK_W * wanted + SIDE_GAP)));
+    size = (around / books - SIDE_GAP) / BOOK_W; // a different size moves the ring a little: go round again
+  }
+  const half = (BOOK_H * size) / 2;
+  return {
+    latitude: +((angle * 180) / Math.PI).toFixed(2),
+    size: +size.toFixed(4),
+    books,
+    top: RADIUS * Math.sin(angle) + half * Math.cos(angle),
+  };
+}
+
+// The rings of books from pole to pole, packed as closely as they go without one book covering another.
+const RINGS = (() => {
+  const equator = fitRing(RING_SIZES[0], null);
+  const upper = [];
+  let below = equator.top;
+  for (const wanted of RING_SIZES.slice(1)) {
+    const ring = fitRing(wanted, below);
+    upper.push(ring);
+    below = ring.top;
   }
   const lower = upper.map((ring) => ({ ...ring, latitude: -ring.latitude })).reverse();
-  return [...lower, { latitude: 0, size: RING_SIZES[0], gap: SLIT }, ...upper];
+  return [...lower, equator, ...upper];
 })();
-
-// How many books a ring holds. A book is flat, so away from the equator the edge nearer the pole sits on a
-// smaller circle than the book's centre does. That edge is where neighbours would touch first, so it decides.
-function booksInRing({ latitude, size, gap }) {
-  const angle = (Math.abs(latitude) * Math.PI) / 180;
-  const nearPole = RADIUS * Math.cos(angle) - ((BOOK_H * size) / 2) * Math.sin(angle);
-  return Math.max(3, Math.floor((2 * Math.PI * nearPole) / (BOOK_W * size + gap)));
-}
 
 const AUTO_SPIN = reduceMotion ? 0 : 0.007; // degrees per ms
 const MAX_TILT = 38; // while nothing is picked
@@ -104,8 +118,7 @@ const degreesApart = (a, b) => Math.abs(((a - b + 540) % 360) - 180);
 
 let ringBelow = [];
 RINGS.forEach((ring, row) => {
-  const books = booksInRing(ring);
-  const { latitude, size } = ring;
+  const { latitude, size, books } = ring;
   const step = 360 / books;
   const inRing = [];
   for (let slot = 0; slot < books; slot++) {
