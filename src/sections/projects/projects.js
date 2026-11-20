@@ -22,7 +22,7 @@ const LIFT = 34; // how far the chosen book comes forward
 // How far the sphere reaches from its centre on screen at scale 1: the far corner of a book, seen through the
 // scene's perspective (620px, in projects.css).
 const REACH = 242;
-const ROW_GAP = 6; // the room between a ring of books and the ring above it
+const ROW_GAP = 3; // the room between a ring of books and the ring above it
 const SLIT = 6; // the room between two books side by side on the equator
 // How large the books are in each ring, from the equator to a pole. The ring nearest a pole holds smaller
 // books: a flat book fans away from its neighbours as it nears a pole, and a smaller one fans less, so the cap
