@@ -22,18 +22,30 @@ const LIFT = 34; // how far the chosen book comes forward
 // How far the sphere reaches from its centre on screen at scale 1: the far corner of a book, seen through the
 // scene's perspective (620px, in projects.css).
 const REACH = 242;
-// Rings of books from pole to pole: the latitude in degrees, how large that ring's books are drawn, and the
-// least room left between neighbours. The rings are packed as closely as they go without one book covering
-// another: on the equator a slit between books, and away from it the corners nearer the pole all but touch.
-// The rings nearest the poles hold smaller books. A flat book fans away from its neighbours as it nears a
-// pole, and a smaller one fans less, so the caps stay closed instead of opening into wide wedges.
-const RINGS = [
-  { latitude: -53.5, size: 0.75, gap: 1 },
-  { latitude: -28, size: 1, gap: 1 },
-  { latitude: 0, size: 1, gap: 6 },
-  { latitude: 28, size: 1, gap: 1 },
-  { latitude: 53.5, size: 0.75, gap: 1 },
-];
+const ROW_GAP = 6; // the room between a ring of books and the ring above it
+const SLIT = 6; // the room between two books side by side on the equator
+// How large the books are in each ring, from the equator to a pole. The ring nearest a pole holds smaller
+// books: a flat book fans away from its neighbours as it nears a pole, and a smaller one fans less, so the cap
+// stays closed instead of opening into wide wedges.
+const RING_SIZES = [1, 1, 0.7];
+
+// Rings of books from pole to pole: each with its latitude in degrees, the size of its books and the least
+// room between neighbours. The rings are packed as closely as they go without one book covering another: each
+// sits ROW_GAP above the one below, and away from the equator the corners nearer the pole all but touch.
+const RINGS = (() => {
+  const upper = [];
+  let top = BOOK_H / 2; // how high the ring below reaches; this starts with the equator's
+  for (const size of RING_SIZES.slice(1)) {
+    const half = (BOOK_H * size) / 2;
+    // The latitude that puts this ring's lower edge ROW_GAP above `top`. A book is a flat tile touching the
+    // sphere at its centre, so its lower edge is at height RADIUS sin(a) - half cos(a); solved here for a.
+    const angle = Math.asin((top + ROW_GAP) / Math.hypot(RADIUS, half)) + Math.atan(half / RADIUS);
+    upper.push({ latitude: +((angle * 180) / Math.PI).toFixed(2), size, gap: 1 });
+    top = RADIUS * Math.sin(angle) + half * Math.cos(angle);
+  }
+  const lower = upper.map((ring) => ({ ...ring, latitude: -ring.latitude })).reverse();
+  return [...lower, { latitude: 0, size: RING_SIZES[0], gap: SLIT }, ...upper];
+})();
 
 // How many books a ring holds. A book is flat, so away from the equator the edge nearer the pole sits on a
 // smaller circle than the book's centre does. That edge is where neighbours would touch first, so it decides.
@@ -98,10 +110,10 @@ RINGS.forEach((ring, row) => {
   const inRing = [];
   for (let slot = 0; slot < books; slot++) {
     const longitude = slot * step + (row % 2 ? step / 2 : 0);
-    // its neighbours: the books it sits above...
+    // its neighbours: the books it sits above, and those one along from them, which it meets at a corner...
     const neighbours = new Set(
       ringBelow
-        .filter((tile) => degreesApart(tile.longitude, longitude) < (tile.step + step) / 2)
+        .filter((tile) => degreesApart(tile.longitude, longitude) < (tile.step + step) * 0.9)
         .map((tile) => tile.project),
     );
     // ...and the two before it and, as the ring comes round, the two after it, so a ring never reads A, B, A
